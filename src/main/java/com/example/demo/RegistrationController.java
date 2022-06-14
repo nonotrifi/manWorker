@@ -1,7 +1,6 @@
 package com.example.demo;
 
 
-import com.example.demo.helper.AlertHelper;
 import com.example.demo.models.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,7 +20,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class RegistrationController  implements Initializable {
-    public static User user;
     @FXML
     private TextField username;
     @FXML
@@ -37,8 +35,6 @@ public class RegistrationController  implements Initializable {
     @FXML
     private Label errorTextPasswords;
 
-    Window window;
-
     @FXML
     private Button registerButton;
 
@@ -50,8 +46,8 @@ public class RegistrationController  implements Initializable {
             if (password.getText().compareTo(password2.getText()) != 0) {
                 errorTextPasswords.setVisible(true);
             } else
-                user = new User(1, username.getText(), password.getText(), firstname.getText(), lastname.getText(), email.getText());
-            System.out.println(user.getFirstName());
+                HelloApplication.currentUser = new User(1, username.getText(), password.getText(), firstname.getText(), lastname.getText(), email.getText());
+            System.out.println(HelloApplication.currentUser.getFirstName());
             FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("home.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), LoginController.FRAME_HEIGHT, LoginController.FRAME_WIDTH);
             scene.getStylesheets().add(getClass().getResource("css/fullpackstyling.css").toExternalForm());
@@ -70,14 +66,14 @@ public class RegistrationController  implements Initializable {
 
 
     /*
-    Means of firstname.requestForcus() :
+    Means of firstname.requestForcus() : surligner l'erreur en gras
      */
     @FXML
     private boolean isValidated() {
         Window owner = registerButton.getScene().getWindow();
         if (firstname.getText().isEmpty()) {
-            AlertHelper.showAlert(Alert.AlertType.ERROR, window, "Error",
-                    "First name text field cannot be blank.");
+            showAlert(Alert.AlertType.ERROR, owner, "Error",
+                    "firstname text field cannot be blank.");
             firstname.requestFocus();
 
         } else if(firstname.getText().length() < 2 || firstname.getText().length() >25 ){
@@ -136,7 +132,7 @@ public class RegistrationController  implements Initializable {
 
 
 
-    private static void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
+    public static void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(null);

@@ -8,11 +8,11 @@ public class Planning {
     private String description; 
     private Date startDate;
     private Date endDate;
-    private int budget;
+    private float budget;
     private ArrayList<Step> steps;
     private Team team;
 
-    public Planning(Date stardDate, Date endDate, String title, String description, Team team, int budget){
+    public Planning(Date stardDate, Date endDate, String title, String description, Team team, float budget){
         this.title = title;
         this.description = description;
         this.startDate = stardDate;
@@ -65,11 +65,11 @@ public class Planning {
 
     /* ------------------------------------- */
 
-    public void setBudget (int newBudget){
+    public void setBudget (float newBudget){
         this.budget = newBudget;
     }
 
-    public int getBudget(){
+    public float getBudget(){
         return this.budget;
     }
 

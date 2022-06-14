@@ -75,6 +75,15 @@ public class HomeController implements Initializable {
         stage.show();
     }
 
+    public void goToTeamsInterface(ActionEvent e) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("teams.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), LoginController.FRAME_HEIGHT, LoginController.FRAME_WIDTH);
+        scene.getStylesheets().add(getClass().getResource("css/fullpackstyling.css").toExternalForm());
+        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
+    }
+
 //    public void myMethod(){
 //        System.out.println(    RegistrationController.user.getFirstName());
 //    }
