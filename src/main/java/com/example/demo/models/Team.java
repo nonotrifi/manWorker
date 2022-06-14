@@ -1,5 +1,7 @@
 package com.example.demo.models;
 
+import javafx.scene.control.TextField;
+
 import java.util.ArrayList;
 
 public class Team{
@@ -7,8 +9,8 @@ public class Team{
     ArrayList<User> admins;
     ArrayList<User> users;
 
-    public Team(String name){
-        this.name = name;
+    public Team(TextField name){
+        this.name = String.valueOf(name);
         this.admins = new ArrayList<>();
         this.users = new ArrayList<>();
     }

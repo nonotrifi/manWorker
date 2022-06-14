@@ -84,6 +84,10 @@ public class HomeController implements Initializable {
         stage.show();
     }
 
+    public void backToLogin(ActionEvent e) throws IOException{
+        this.backToLogin(e);
+    }
+
 //    public void myMethod(){
 //        System.out.println(    RegistrationController.user.getFirstName());
 //    }

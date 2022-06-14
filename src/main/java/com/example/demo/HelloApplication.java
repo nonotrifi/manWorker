@@ -23,7 +23,7 @@ import java.util.ArrayList;
 13/06/2022
 - create an interface for the projects page with all the project the user created
 - settings interface to change name of the user and password
-- create a new team interface ( add it in the menu ) like the project interface ( like progects interface ) TeamController
+- create a new team interface ( add it in the menu ) like the project interface ( like projects interface ) TeamController
 - possibility to modify a planning ( add a step, add tasks to the steps, remove steps or tasks)
 - fix menu ( without reloading ) -> no scene
 
@@ -43,7 +43,7 @@ public class HelloApplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("logIn.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), LoginController.FRAME_HEIGHT, LoginController.FRAME_WIDTH);
-        stage.setTitle("Hello!");
+        stage.setTitle("Welcome to manWorker Application!");
         stage.setScene(scene);
         stage.show();
     }

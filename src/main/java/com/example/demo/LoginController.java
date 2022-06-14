@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class LoginController {
-    public static final int FRAME_HEIGHT = 600, FRAME_WIDTH = 1200;
+    public static final int FRAME_HEIGHT = 800, FRAME_WIDTH = 1000;
 
 
     @FXML
