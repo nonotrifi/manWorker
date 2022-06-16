@@ -40,12 +40,20 @@ public class User {
         planning.addStep(step);
     }
 
+    public void addTask(Planning planning, int indexStep, Task task){
+        if(!planning.getTeam().checkIfUserIsAdmin(this)){
+            return;
+        }
+
+        planning.addTask(indexStep, task);
+    }
+
     public void modifyPlanningTitle(Planning planning, String newTitle){
         if(!planning.getTeam().checkIfUserIsAdmin(this)){
             return;
         }
 
-        planning.setName(newTitle);
+        planning.setTitle(newTitle);
     }
 
     // modifyPlanningBudget
@@ -82,16 +90,20 @@ public class User {
 
     }
 
+    public void deleteTask(Planning planning, int indexStep, int indexTask){
+        if(!planning.getTeam().checkIfUserIsAdmin(this)){
+            return;
+        }
+
+        planning.deleteTask(indexStep, indexTask);
+    }
+
     public String getUsername(){
         return this.username;
     }
 
     public String getPassword(){
         return this.password;
-    }
-
-    public void setNewPassword(String newPassword){
-        this.password = newPassword;
     }
 
     public String getLastName(){

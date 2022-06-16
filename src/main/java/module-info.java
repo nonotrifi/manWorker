@@ -4,7 +4,6 @@ module com.example.demo {
     requires org.controlsfx.controls;
 
 
-    opens com.example.demo;
-    opens com.example.demo.models;
+    opens com.example.demo to javafx.fxml;
     exports com.example.demo;
 }
