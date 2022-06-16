@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Planning {
-    private String title;
+    private String name;
     private String description; 
     private Date startDate;
     private Date endDate;
@@ -13,7 +13,7 @@ public class Planning {
     private Team team;
 
     public Planning(Date stardDate, Date endDate, String title, String description, Team team, float budget){
-        this.title = title;
+        this.name = title;
         this.description = description;
         this.startDate = stardDate;
         this.endDate = endDate;
@@ -27,20 +27,15 @@ public class Planning {
         this.steps.add(step);
     }
 
-    public void addTask(int indexStep, Task task){
-
-        this.steps.get(indexStep).getTasks().add(task);
-    }
-
     /*---------------------------------------- Getters and setters----------------------------------------- */
 
-    public void setTitle(String newTitle){
+    public void setName(String newTitle){
 
-        this.title = newTitle;
+        this.name = newTitle;
     }
 
-    public String getTitle(){
-        return this.title;
+    public String getName(){
+        return this.name;
     }
 
     /* ------------------------------------- */
@@ -93,7 +88,4 @@ public class Planning {
         this.steps.get(indexStep).setName(newName);
     }
 
-    public void deleteTask(int indexStep, int indexTask){
-        this.steps.get(indexStep).getTasks().remove(indexTask);
-    }
 }
