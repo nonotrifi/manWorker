@@ -4,20 +4,18 @@ package com.example.demo;
 import com.example.demo.models.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import static com.example.demo.ManWorkerApplication.showAlert;
 
 public class RegistrationController  implements Initializable {
     @FXML
@@ -32,8 +30,6 @@ public class RegistrationController  implements Initializable {
     private TextField password2;
     @FXML
     private TextField email;
-    @FXML
-    private Label errorTextPasswords;
 
     @FXML
     private Button registerButton;
@@ -43,25 +39,20 @@ public class RegistrationController  implements Initializable {
     @FXML
     public void goToHome(ActionEvent e) throws IOException {
         if (this.isValidated()) {
-            if (password.getText().compareTo(password2.getText()) != 0) {
-                errorTextPasswords.setVisible(true);
-            } else
-                HelloApplication.currentUser = new User(1, username.getText(), password.getText(), firstname.getText(), lastname.getText(), email.getText());
-            System.out.println(HelloApplication.currentUser.getFirstName());
-            FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("home.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), LoginController.FRAME_HEIGHT, LoginController.FRAME_WIDTH);
-            scene.getStylesheets().add(getClass().getResource("css/fullpackstyling.css").toExternalForm());
-            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
+            ManWorkerApplication.currentUser = new User(1, username.getText(), password.getText(), firstname.getText(), lastname.getText(), email.getText());
+            ManWorkerApplication.loadPage("home.fxml", e);
         }
+    }
+
+    @FXML
+    public void goToLogin(ActionEvent e) throws IOException{
+        ManWorkerApplication.loadPage("logIn.fxml", e);
     }
 
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        errorTextPasswords.setVisible(false);
     }
 
 
@@ -122,6 +113,10 @@ public class RegistrationController  implements Initializable {
             showAlert(Alert.AlertType.ERROR, owner, "Error",
                     "Confirm password text field cannot be less than 5 and greator than 25 characters.");
             password2.requestFocus();
+        } else if (password.getText().compareTo(password2.getText()) != 0) {
+            showAlert(Alert.AlertType.ERROR, owner, "Error",
+                    "Passwords are not the same.");
+            password2.requestFocus();
         } else {
             return true;
         }
@@ -130,15 +125,5 @@ public class RegistrationController  implements Initializable {
         return false;
     }
 
-
-
-    public static void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.initOwner(owner);
-        alert.show();
-    }
 
 }

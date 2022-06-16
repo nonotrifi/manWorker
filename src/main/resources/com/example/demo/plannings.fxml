@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import org.controlsfx.control.*?>
+<?import com.jfoenix.controls.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="contentPlanning" prefHeight="436.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.ProjectController">
+   <children>
+      <VBox layoutX="102.0" layoutY="46.0" prefHeight="241.0" prefWidth="89.0" spacing="21.0">
+         <children>
+            <Label text="Name">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label text="Description">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label text="Team">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label text="Start time">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label text="End time">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label text="Budget">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label>
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
+      <VBox layoutX="176.0" layoutY="43.0" prefHeight="252.0" prefWidth="131.0" spacing="10.0">
+         <children>
+            <TextField fx:id="name" prefHeight="30.0" prefWidth="253.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="description">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextField>
+            <PrefixSelectionChoiceBox fx:id="teamChoice" prefHeight="31.0" prefWidth="134.0" />
+            <DatePicker fx:id="startDate" />
+            <DatePicker fx:id="endDate" />
+            <TextField fx:id="budget" prefHeight="0.0" prefWidth="131.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextField>
+         </children>
+      </VBox>
+      <TableView fx:id="table" layoutX="324.0" layoutY="14.0" prefHeight="338.0" prefWidth="469.0">
+        <columns>
+          <TableColumn fx:id="nameCol" prefWidth="75.0" text="Name" />
+          <TableColumn fx:id="descriptionCol" prefWidth="75.0" text="Description" />
+            <TableColumn fx:id="teamCol" prefWidth="75.0" text="Team" />
+            <TableColumn fx:id="startCol" prefWidth="75.0" text="Start" />
+            <TableColumn fx:id="endCol" prefWidth="75.0" text="End" />
+            <TableColumn fx:id="budgetCol" prefWidth="75.0" text="Budget" />
+        </columns>
+      </TableView>
+      <Button layoutX="138.0" layoutY="321.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="31.0" prefWidth="82.0" text="Modify" />
+      <Button layoutX="231.0" layoutY="321.0" mnemonicParsing="false" onAction="#deletePlanning" prefHeight="31.0" prefWidth="82.0" text="Delete" />
+      <Button layoutX="44.0" layoutY="321.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#addPlanning" prefHeight="31.0" prefWidth="82.0" text="Insert" />
+   </children>
+</AnchorPane>
