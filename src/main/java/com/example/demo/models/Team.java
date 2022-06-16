@@ -9,7 +9,7 @@ public class Team{
     ArrayList<User> admins;
     ArrayList<User> users;
 
-    public Team(TextField name){
+    public Team(String name){
         this.name = String.valueOf(name);
         this.admins = new ArrayList<>();
         this.users = new ArrayList<>();
