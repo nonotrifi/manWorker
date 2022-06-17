@@ -7,4 +7,5 @@ module com.example.demo {
     opens com.example.demo;
     opens com.example.demo.models;
     exports com.example.demo;
+    exports com.example.demo.models;
 }

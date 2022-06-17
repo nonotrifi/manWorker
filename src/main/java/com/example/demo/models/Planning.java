@@ -78,6 +78,8 @@ public class Planning {
         return description;
     }
 
+    public ArrayList<Step> getSteps() {return this.steps;}
+
     /* ------------------------------------- */
 
     public Team getTeam(){
@@ -87,5 +89,6 @@ public class Planning {
     public void modifyStepName(int indexStep, String newName){
         this.steps.get(indexStep).setName(newName);
     }
+
 
 }

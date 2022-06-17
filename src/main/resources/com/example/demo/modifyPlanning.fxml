@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import org.controlsfx.control.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.ModifyPlanningController">
+   <children>
+      <VBox layoutX="272.0" layoutY="66.0" prefHeight="252.0" prefWidth="131.0" spacing="10.0">
+         <children>
+            <TextField fx:id="name" prefHeight="30.0" prefWidth="253.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="description">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextField>
+            <PrefixSelectionChoiceBox fx:id="teamChoice" prefHeight="31.0" prefWidth="134.0" />
+            <DatePicker fx:id="startDate" />
+            <DatePicker fx:id="endDate" />
+            <TextField fx:id="budget" prefHeight="0.0" prefWidth="131.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextField>
+         </children>
+      </VBox>
+      <VBox layoutX="198.0" layoutY="69.0" prefHeight="241.0" prefWidth="89.0" spacing="21.0">
+         <children>
+            <Label text="Name">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label text="Description">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label text="Team">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label text="Start time">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label text="End time">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label text="Budget">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label>
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
+      <Button layoutX="265.0" layoutY="320.0" mnemonicParsing="false" onAction="#modifyPlanning" prefHeight="31.0" prefWidth="71.0" text="OK" />
+   </children>
+</AnchorPane>

@@ -78,8 +78,8 @@ public class HomeController implements Initializable {
     }
 
 
-    public void backToLogin(ActionEvent e) {
-        this.backToLogin(e);
+    public void backToLogin(ActionEvent e) throws IOException {
+        ManWorkerApplication.loadPage("logIn.fxml", e);
     }
 
     @FXML
