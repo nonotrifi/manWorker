@@ -124,20 +124,20 @@ public class PlanningController implements Initializable {
         }
         else if (name.getText().isEmpty()) {
             showAlert(Alert.AlertType.ERROR, owner, "Error",
-                    "name text field cannot be blank.");
+                    "Name text field cannot be blank.");
             name.requestFocus();
 
         }
 
         else if(name.getText().length() < 2 || name.getText().length() >25 ){
             showAlert(Alert.AlertType.ERROR, owner, "Error",
-                    "First name text field cannot be less than 2 and greator than 25 characters.");
+                    "First name text field cannot be less than 2 and greater than 25 characters.");
             name.requestFocus();
         }
 
         else if(teamChoice.getItems().isEmpty()){
             showAlert(Alert.AlertType.ERROR, owner, "Error",
-                    "You has to select the team");
+                    "You have to select the team");
             return;
         }
         else{
