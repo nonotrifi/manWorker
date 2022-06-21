@@ -30,4 +30,9 @@ public class Team{
     public void addUser(User user){
         this.users.add(user);
     }
+
+    @Override
+    public String toString(){
+        return this.name;
+    }
 }

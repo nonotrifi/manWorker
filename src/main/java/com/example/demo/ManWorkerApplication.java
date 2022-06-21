@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.models.Planning;
+import com.example.demo.models.Step;
 import com.example.demo.models.Team;
 import com.example.demo.models.User;
 import javafx.application.Application;
@@ -20,16 +21,12 @@ import java.util.ArrayList;
 TODOS
 
 Home:
-- modify plannings
-- modify steps
-- Create a database Mysql :
-- do the database
+- add possibility modify plannings ( change name, description, budget....)
 - fix aesthetic
 
 Tomorrow:
-- fix team problem
-- fix add steps load ( we have a blank page )
-- fix team name on the table
+- Create a database Mysql
+- do the database
 
 Later:
 - page to add people to your teams
@@ -72,6 +69,7 @@ public class ManWorkerApplication extends Application {
 
 
     public static void main(String[] args) {
+        Step step = new Step("AAA", "BBB");
         launch();
     }
     

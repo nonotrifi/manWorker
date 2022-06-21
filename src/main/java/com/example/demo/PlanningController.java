@@ -2,6 +2,7 @@ package com.example.demo;
 
 import com.example.demo.models.Planning;
 import com.example.demo.models.Team;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,7 +24,7 @@ import java.util.ResourceBundle;
 import static com.example.demo.ManWorkerApplication.teams;
 import static com.example.demo.ManWorkerApplication.showAlert;
 
-public class ProjectController implements Initializable {
+public class PlanningController implements Initializable {
 
     @FXML
     private AnchorPane contentPlanning;
@@ -62,6 +63,8 @@ public class ProjectController implements Initializable {
     @FXML
     private TableColumn<Planning, String> teamCol;
 
+    private AddStepsController addStepsController;
+
 
     Window owner;
 
@@ -77,7 +80,6 @@ public class ProjectController implements Initializable {
         descriptionCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("description"));
         budgetCol.setCellValueFactory(new PropertyValueFactory<Planning, Float>("budget"));
         startCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("startDate"));
-        endCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("endDate"));
         teamCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("team"));
 
         for(Planning planning: ManWorkerApplication.plannings)
@@ -87,8 +89,9 @@ public class ProjectController implements Initializable {
             TableRow<Planning> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
-                    Planning rowData = row.getItem();
-                    loadContent("addSteps.fxml");
+                    FXMLLoader loader = loadContent("addSteps.fxml");
+                    addStepsController = loader.getController();
+                    addStepsController.setPlanning(row.getItem());
                 }
             });
             return row ;
@@ -121,20 +124,20 @@ public class ProjectController implements Initializable {
         }
         else if (name.getText().isEmpty()) {
             showAlert(Alert.AlertType.ERROR, owner, "Error",
-                    "name text field cannot be blank.");
+                    "Name text field cannot be blank.");
             name.requestFocus();
 
         }
 
         else if(name.getText().length() < 2 || name.getText().length() >25 ){
             showAlert(Alert.AlertType.ERROR, owner, "Error",
-                    "First name text field cannot be less than 2 and greator than 25 characters.");
+                    "First name text field cannot be less than 2 and greater than 25 characters.");
             name.requestFocus();
         }
 
         else if(teamChoice.getItems().isEmpty()){
             showAlert(Alert.AlertType.ERROR, owner, "Error",
-                    "You has to select the team");
+                    "You have to select the team");
             return;
         }
         else{
@@ -176,21 +179,20 @@ public class ProjectController implements Initializable {
 
 
     @FXML
-    public void loadContent(String contentName){
+    public FXMLLoader loadContent(String contentName){
         FXMLLoader loader = new FXMLLoader(HomeController.class.getResource(contentName));
-        AnchorPane root;
 
         for(Object c: contentPlanning.getChildren().toArray()){
             contentPlanning.getChildren().remove(c);
         }
 
         try {
-            root = loader.load();
-            contentPlanning.getChildren().add(root);
+            contentPlanning.getChildren().add(loader.load());
         } catch (IOException ioe) {
-            return;
+            ioe.printStackTrace();
         }
 
+        return loader;
     }
 
 

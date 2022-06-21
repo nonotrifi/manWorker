@@ -5,13 +5,17 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.stage.Window;
 
 import java.io.IOException;
 
 import static com.example.demo.ManWorkerApplication.showAlert;
 
 
-public class TeamsController  extends ProjectController {
+public class TeamsController{
+
+
+    Window owner;
 
     @FXML
    private TextField name;
