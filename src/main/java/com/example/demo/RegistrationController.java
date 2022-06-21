@@ -13,6 +13,9 @@ import javafx.stage.Window;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ResourceBundle;
 
 import static com.example.demo.ManWorkerApplication.showAlert;
@@ -37,9 +40,19 @@ public class RegistrationController  implements Initializable {
 
     // !=
     @FXML
-    public void goToHome(ActionEvent e) throws IOException {
+    public void goToHome(ActionEvent e) throws IOException, SQLException {
         if (this.isValidated()) {
-            ManWorkerApplication.currentUser = new User(1, username.getText(), password.getText(), firstname.getText(), lastname.getText(), email.getText());
+            //ManWorkerApplication.currentUser = new User(1, username.getText(), password.getText(), firstname.getText(), lastname.getText(), email.getText());
+
+            Statement stmt = ManWorkerApplication.databaseLink.createStatement();
+
+            String sql = "INSERT INTO users " +
+                    "VALUES (default," + username.getText() +
+                    "," + password.getText() + "," + firstname.getText() + "," + lastname.getText() + "," +
+                    email.getText() + ");";
+
+            stmt.executeUpdate(sql);
+
             ManWorkerApplication.loadPage("home.fxml", e);
         }
     }

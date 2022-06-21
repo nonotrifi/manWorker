@@ -21,7 +21,7 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.ResourceBundle;
 
-import static com.example.demo.ManWorkerApplication.teams;
+//import static com.example.demo.ManWorkerApplication.teams;
 import static com.example.demo.ManWorkerApplication.showAlert;
 
 public class PlanningController implements Initializable {
@@ -71,9 +71,9 @@ public class PlanningController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if(teamChoice != null){
-            for(Team t: ManWorkerApplication.teams){
+            /*for(Team t: ManWorkerApplication.teams){
                 teamChoice.getItems().add(t.getName());
-            }
+            }*/
         }
 
         nameCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("name"));
@@ -82,8 +82,8 @@ public class PlanningController implements Initializable {
         startCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("startDate"));
         teamCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("team"));
 
-        for(Planning planning: ManWorkerApplication.plannings)
-            table.getItems().add(planning);
+        /*for(Planning planning: ManWorkerApplication.plannings)
+            table.getItems().add(planning);*/
 
         table.setRowFactory( tv -> {
             TableRow<Planning> row = new TableRow<>();
@@ -143,7 +143,7 @@ public class PlanningController implements Initializable {
         else{
             Planning newPlanning = new Planning(convertDate(startDate), convertDate(endDate),
                     name.getText(), description.getText(), searchTeam(teamChoice.getValue()), Float.parseFloat(budget.getText()));
-            ManWorkerApplication.plannings.add(newPlanning);
+            //ManWorkerApplication.plannings.add(newPlanning);
 
             table.getItems().add(newPlanning);
         }
@@ -154,7 +154,7 @@ public class PlanningController implements Initializable {
     private void deletePlanning(ActionEvent e){
         Planning planning = (Planning)table.getSelectionModel().getSelectedItem();
         table.getItems().remove(planning);
-        ManWorkerApplication.plannings.remove(planning);
+        //ManWorkerApplication.plannings.remove(planning);
     }
 
     @FXML
@@ -169,10 +169,10 @@ public class PlanningController implements Initializable {
     }
 
     private Team searchTeam(String teamName){
-        for(Team t: teams){
+        /*for(Team t: teams){
             if(t.getName().compareTo(teamName) == 0)
                 return t;
-        }
+        }*/
 
         return null;
     }

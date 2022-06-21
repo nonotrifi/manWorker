@@ -9,8 +9,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 
+
 import java.io.IOException;
 import java.net.URL;
+
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -70,6 +72,11 @@ public class HomeController implements Initializable {
     @FXML
     public void goToTeamsInterface(){
         loadContent("teams.fxml");
+    }
+
+    @FXML
+    public void goToConnectionDb(){
+        loadContent("connectToDatabase.fxml");
     }
 
     @FXML

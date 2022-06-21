@@ -6,14 +6,19 @@ import com.example.demo.models.Team;
 import com.example.demo.models.User;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import org.controlsfx.control.action.Action;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.ArrayList;
 
 /*
@@ -34,21 +39,38 @@ Later:
 */
 
 public class ManWorkerApplication extends Application {
+    @FXML
+    private Label showUsername;
     public static final int FRAME_HEIGHT = 800, FRAME_WIDTH = 1000;
 
-    static ArrayList<Planning> plannings = new ArrayList<Planning>();
-    static ArrayList<Team> teams = new ArrayList<>();
+    //static ArrayList<Planning> plannings = new ArrayList<Planning>();
+    //static ArrayList<Team> teams = new ArrayList<>();
 
-    static User currentUser;
+    static int currentUserId;
+
+    public static Connection databaseLink;
 
     @Override
     public void start(Stage stage) throws IOException {
-        teams.add(new Team("A"));
+        String dbName = "mydb";
+        String dbUsername = "root";
+        String dbPassword = "admin";
+        String url = "jdbc:mysql://localhost/" + dbName + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            databaseLink = DriverManager.getConnection(url,dbUsername, dbPassword);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         FXMLLoader fxmlLoader = new FXMLLoader(ManWorkerApplication.class.getResource("logIn.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), FRAME_WIDTH, FRAME_HEIGHT);
         stage.setScene(scene);
         stage.show();
     }
+
 
     public static void loadPage(String pageName, ActionEvent e) throws IOException{
         FXMLLoader fxmlLoader = new FXMLLoader(ManWorkerApplication.class.getResource(pageName));

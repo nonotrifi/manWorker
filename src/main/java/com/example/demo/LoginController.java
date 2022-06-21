@@ -3,22 +3,55 @@ package com.example.demo;
 import com.example.demo.models.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TextField;
+import javafx.stage.Window;
 
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import static com.example.demo.ManWorkerApplication.showAlert;
 
 public class LoginController{
 
     @FXML
+    private TextField username, password;
+    private Window owner;
+
+    @FXML
     public void goToRegistration(ActionEvent e) throws IOException {
         ManWorkerApplication.loadPage("registration.fxml", e);
-        System.out.println("Hello");
     }
 
     @FXML
-    public void goToHome(ActionEvent e) throws IOException {
-        ManWorkerApplication.loadPage("home.fxml", e);
-        ManWorkerApplication.currentUser = new User(1, "user", "admin123",
-                "John", "White", "John.white@gmail.com");
+    public void goToHome(ActionEvent e) throws IOException, SQLException {
+
+        Statement stmt = ManWorkerApplication.databaseLink.createStatement();
+
+        String sql = "SELECT userId, username, password FROM users WHERE username =" + username.getText() +";";
+
+        ResultSet result = stmt.executeQuery(sql);
+        if(result == null)
+            showAlert(Alert.AlertType.ERROR, owner, "Error",
+                    "Username is worng.");
+        else {
+            String userPassword = result.getString("password");
+
+            if (userPassword.compareTo(password.getText()) == 0) {
+                ManWorkerApplication.loadPage("home.fxml", e);
+                ManWorkerApplication.currentUserId = result.getInt("userId");
+            }
+            else
+                showAlert(Alert.AlertType.ERROR, owner, "Error",
+                        "Password is wrong.");
+        }
+
+
+
+        //ManWorkerApplication.currentUser = new User(1, "user", "admin123",
+                //"John", "White", "John.white@gmail.com");
     }
 
 }
