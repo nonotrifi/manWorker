@@ -30,18 +30,21 @@ public class LoginController{
 
         Statement stmt = ManWorkerApplication.databaseLink.createStatement();
 
-        String sql = "SELECT userId, username, password FROM users WHERE username =" + username.getText() +";";
+
+        String sql = "SELECT password FROM users WHERE name = \'" + username.getText() +"\';";
 
         ResultSet result = stmt.executeQuery(sql);
+
         if(result == null)
             showAlert(Alert.AlertType.ERROR, owner, "Error",
                     "Username is worng.");
         else {
+            result.first();
             String userPassword = result.getString("password");
 
             if (userPassword.compareTo(password.getText()) == 0) {
                 ManWorkerApplication.loadPage("home.fxml", e);
-                ManWorkerApplication.currentUserId = result.getInt("userId");
+                ManWorkerApplication.currentUser= username.getText();
             }
             else
                 showAlert(Alert.AlertType.ERROR, owner, "Error",

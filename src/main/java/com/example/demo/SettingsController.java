@@ -30,7 +30,7 @@ public class SettingsController{
     public void saveNewPassword(ActionEvent e) throws SQLException {
         Statement stmt = ManWorkerApplication.databaseLink.createStatement();
 
-        String sql = "SELECT userId, username, password FROM users WHERE id =" + ManWorkerApplication.currentUserId +";";
+        String sql = "SELECT userId, username, password FROM users WHERE id =" + ManWorkerApplication.currentUser +";";
 
         ResultSet result = stmt.executeQuery(sql);
 
@@ -63,7 +63,7 @@ public class SettingsController{
                     "Password changed correctly.");
             sql = "UPDATE users" +
                     "SET password =" + this.newPassword +
-                    "WHERE userId" + ManWorkerApplication.currentUserId + ";";
+                    "WHERE userId" + ManWorkerApplication.currentUser + ";";
             stmt.executeUpdate(sql);
         }
     }

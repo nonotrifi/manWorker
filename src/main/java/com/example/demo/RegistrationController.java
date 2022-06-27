@@ -13,11 +13,13 @@ import javafx.stage.Window;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ResourceBundle;
 
+import static com.example.demo.ManWorkerApplication.databaseLink;
 import static com.example.demo.ManWorkerApplication.showAlert;
 
 public class RegistrationController  implements Initializable {
@@ -42,16 +44,18 @@ public class RegistrationController  implements Initializable {
     @FXML
     public void goToHome(ActionEvent e) throws IOException, SQLException {
         if (this.isValidated()) {
-            //ManWorkerApplication.currentUser = new User(1, username.getText(), password.getText(), firstname.getText(), lastname.getText(), email.getText());
+            String query = " insert into users(name, password, firstName, lastName, email)"
+                    + " values (?, ?, ?, ?, ?)";
 
-            Statement stmt = ManWorkerApplication.databaseLink.createStatement();
+            // create the mysql insert preparedstatement
+            PreparedStatement preparedStmt = databaseLink.prepareStatement(query);
+            preparedStmt.setString (1, username.getText());
+            preparedStmt.setString   (2, password.getText());
+            preparedStmt.setString(3, firstname.getText());
+            preparedStmt.setString    (4, lastname.getText());
+            preparedStmt.setString    (5, email.getText());
 
-            String sql = "INSERT INTO users " +
-                    "VALUES (default," + username.getText() +
-                    "," + password.getText() + "," + firstname.getText() + "," + lastname.getText() + "," +
-                    email.getText() + ");";
-
-            stmt.executeUpdate(sql);
+            preparedStmt.execute();
 
             ManWorkerApplication.loadPage("home.fxml", e);
         }
@@ -73,8 +77,23 @@ public class RegistrationController  implements Initializable {
     Means of firstname.requestForcus() : surligner l'erreur en gras
      */
     @FXML
-    private boolean isValidated() {
+    private boolean isValidated() throws SQLException {
         Window owner = registerButton.getScene().getWindow();
+
+        Statement stmt = ManWorkerApplication.databaseLink.createStatement();
+
+        String sql = "SELECT name FROM users WHERE name = \'" + username.getText() +"\';";
+
+        ResultSet result = stmt.executeQuery(sql);
+
+        if(result.next()){
+            showAlert(Alert.AlertType.ERROR, owner, "Error",
+                    "this username is already used.");
+            username.requestFocus();
+            return false;
+        }
+
+
         if (firstname.getText().isEmpty()) {
             showAlert(Alert.AlertType.ERROR, owner, "Error",
                     "firstname text field cannot be blank.");
@@ -130,7 +149,8 @@ public class RegistrationController  implements Initializable {
             showAlert(Alert.AlertType.ERROR, owner, "Error",
                     "Passwords are not the same.");
             password2.requestFocus();
-        } else {
+        }
+        else {
             return true;
         }
 

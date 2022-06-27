@@ -26,16 +26,13 @@ import java.util.ArrayList;
 TODOS
 
 Home:
-- add possibility modify plannings ( change name, description, budget....)
 - fix aesthetic
+- check if the end date is after the start date
+- add team to database with insert
+- test the app to find if there are bugs
 
-Tomorrow:
-- Create a database Mysql
-- do the database
-
-Later:
-- page to add people to your teams
-
+- work with idTeam when adding a new planning
+- i just want to see my plannings
 */
 
 public class ManWorkerApplication extends Application {
@@ -46,7 +43,7 @@ public class ManWorkerApplication extends Application {
     //static ArrayList<Planning> plannings = new ArrayList<Planning>();
     //static ArrayList<Team> teams = new ArrayList<>();
 
-    static int currentUserId;
+    static String currentUser;
 
     public static Connection databaseLink;
 

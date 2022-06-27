@@ -8,9 +8,11 @@ import javafx.scene.control.TextField;
 import javafx.stage.Window;
 
 import java.io.IOException;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import static com.example.demo.ManWorkerApplication.databaseLink;
 import static com.example.demo.ManWorkerApplication.showAlert;
 
 
@@ -31,11 +33,13 @@ public class TeamsController{
         }
         else{
             //ManWorkerApplication.teams.add(new Team(name.getText()));
-            Statement stmt = ManWorkerApplication.databaseLink.createStatement();
 
-            String sql = "INSERT INTO teams VALUES (default, " + name.getText() + ");";
+            String sql = "INSERT INTO teams(name) VALUES (?);";
 
-            stmt.executeUpdate(sql);
+            PreparedStatement preparedStmt = databaseLink.prepareStatement(sql);
+            preparedStmt.setString (1, name.getText());
+
+            preparedStmt.execute();
 
             showAlert(Alert.AlertType.CONFIRMATION, owner, "Confirmation",
                     "The team was added correctly.");
