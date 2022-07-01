@@ -9,7 +9,7 @@ module com.example.demo {
     requires java.sql;
 
     opens com.example.demo;
-    opens com.example.demo.models;
     exports com.example.demo;
+    opens com.example.demo.model;
 }
 

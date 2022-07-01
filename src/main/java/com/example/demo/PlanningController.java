@@ -1,8 +1,7 @@
 package com.example.demo;
 
-import com.example.demo.models.Planning;
-import com.example.demo.models.Team;
-import javafx.beans.property.SimpleStringProperty;
+import com.example.demo.model.Planning;
+import com.example.demo.model.Team;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,8 +23,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.ResourceBundle;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 //import static com.example.demo.ManWorkerApplication.teams;
 import static com.example.demo.ManWorkerApplication.databaseLink;
@@ -107,17 +104,17 @@ public class PlanningController implements Initializable {
         endCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("endDate"));
         teamCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("team"));
 
-        /*for(Planning planning: ManWorkerApplication.plannings)
-            table.getItems().add(planning);*/
-
         Statement stmt = null;
         try {
             stmt = ManWorkerApplication.databaseLink.createStatement();
             String sql = "SELECT * FROM plannings;";
             ResultSet result = stmt.executeQuery(sql);
 
+            /* result has the rows that are in the database, each row is used to create new planning objects
+            and put them into the tableView in the interface
+             */
             while(result.next()){
-                table.getItems().add(new Planning(result.getTimestamp("startDate"),
+                table.getItems().add(new Planning(result.getInt("idPlanning"), result.getTimestamp("startDate"),
                                 result.getTimestamp("endDate"), result.getString("name"),
                                 result.getString("description"), new Team("Name"), result.getDouble("budget")));
             }
@@ -190,36 +187,57 @@ public class PlanningController implements Initializable {
             return;
         }
         else{
-            Planning newPlanning = new Planning(convertDate(startDate), convertDate(endDate),
+            // adding new planning into the table and into the database
+
+            String query = " insert into plannings(name, description, budget, startDate, endDate, teamName)"
+                    + " values (?, ?, ?, ?, ?, ?)";
+
+            // create the mysql insert preparedstatement
+            PreparedStatement preparedStmt = databaseLink.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            preparedStmt.setString (1, name.getText());
+            preparedStmt.setString   (2, description.getText());
+            preparedStmt.setDouble(3, Integer.parseInt(budget.getText()));
+            preparedStmt.setDate(4, new java.sql.Date(convertDate(startDate).getTime()));
+            preparedStmt.setDate    (5, new java.sql.Date(convertDate(endDate).getTime()));
+            preparedStmt.setString    (6, teamChoice.getValue());
+
+            ResultSet rs = preparedStmt.getGeneratedKeys();
+
+            int idPlanning = 0;
+
+            if (rs.next()) {
+                idPlanning = rs.getInt(1);
+            }
+
+            Planning newPlanning = new Planning(idPlanning, convertDate(startDate), convertDate(endDate),
                     name.getText(), description.getText(), new Team(teamChoice.getValue()), Float.parseFloat(budget.getText()));
 
             table.getItems().add(newPlanning);
 
-            String query = " insert into plannings(name, description, budget, startDate, endDate, idTeam)"
-                    + " values (?, ?, ?, ?, ?, ?)";
-
-            // create the mysql insert preparedstatement
-            PreparedStatement preparedStmt = databaseLink.prepareStatement(query);
-            preparedStmt.setString (1, newPlanning.getName());
-            preparedStmt.setString   (2, newPlanning.getDescription());
-            preparedStmt.setDouble(3, newPlanning.getBudget());
-            preparedStmt.setDate(4, new java.sql.Date(newPlanning.getStartDate().getTime()));
-            preparedStmt.setDate    (5, new java.sql.Date(newPlanning.getEndDate().getTime()));
-            preparedStmt.setInt    (6, 1);
-
-            preparedStmt.execute();
         }
 
     }
 
     @FXML
-    private void deletePlanning(ActionEvent e){
+    private void deletePlanning(ActionEvent e) throws SQLException {
         Planning planning = (Planning)table.getSelectionModel().getSelectedItem();
         table.getItems().remove(planning);
+
+        String sql = "DELETE FROM plannings WHERE idPlanning = ?";
+
+        PreparedStatement pstmt = databaseLink.prepareStatement(sql);
+
+            // set the corresponding param
+            pstmt.setInt(1, planning.getIdPlanning());
+            // execute the delete statement
+            pstmt.executeUpdate();
+
+
         //ManWorkerApplication.plannings.remove(planning);
     }
 
 
+    // This function convert DatePicker to Date
     private Date convertDate(DatePicker date){
         LocalDate localDate = date.getValue();
         Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));

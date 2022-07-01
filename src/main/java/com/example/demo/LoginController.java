@@ -1,6 +1,5 @@
 package com.example.demo;
 
-import com.example.demo.models.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -30,7 +29,6 @@ public class LoginController{
 
         Statement stmt = ManWorkerApplication.databaseLink.createStatement();
 
-
         String sql = "SELECT password FROM users WHERE name = \'" + username.getText() +"\';";
 
         ResultSet result = stmt.executeQuery(sql);
@@ -51,10 +49,6 @@ public class LoginController{
                         "Password is wrong.");
         }
 
-
-
-        //ManWorkerApplication.currentUser = new User(1, "user", "admin123",
-                //"John", "White", "John.white@gmail.com");
     }
 
 }

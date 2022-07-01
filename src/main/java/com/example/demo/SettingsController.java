@@ -7,10 +7,12 @@ import javafx.scene.control.TextField;
 import javafx.stage.Window;
 
 //import static com.example.demo.ManWorkerApplication.currentUser;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import static com.example.demo.ManWorkerApplication.databaseLink;
 import static com.example.demo.ManWorkerApplication.showAlert;
 
 public class SettingsController{
@@ -30,9 +32,12 @@ public class SettingsController{
     public void saveNewPassword(ActionEvent e) throws SQLException {
         Statement stmt = ManWorkerApplication.databaseLink.createStatement();
 
-        String sql = "SELECT userId, username, password FROM users WHERE id =" + ManWorkerApplication.currentUser +";";
+        String sql = "SELECT password FROM users WHERE name = ?;";
 
-        ResultSet result = stmt.executeQuery(sql);
+        PreparedStatement preparedStmt = databaseLink.prepareStatement(sql);
+        preparedStmt.setString(1, name.getText());
+
+        ResultSet result = preparedStmt.executeQuery();
 
         if(result == null){
             ManWorkerApplication.showAlert(Alert.AlertType.ERROR, owner, "Error",
@@ -40,10 +45,11 @@ public class SettingsController{
             return;
         }
 
-        String username = result.getString("username");
+        result.next();
+
         String password = result.getString("password");
 
-        if(name.getText().compareTo(username) != 0){
+        if(result.wasNull()){
             ManWorkerApplication.showAlert(Alert.AlertType.ERROR, owner, "Error",
                     "The username is wrong.");
             name.requestFocus();
@@ -59,12 +65,15 @@ public class SettingsController{
             newPassword.requestFocus();
         }
         else{
+            sql = "UPDATE users SET password = ? WHERE name = ?;";
+
+            preparedStmt = databaseLink.prepareStatement(sql);
+            preparedStmt.setString(1, newPassword.getText());
+            preparedStmt.setString(2, name.getText());
+            preparedStmt.executeUpdate();
+
             showAlert(Alert.AlertType.CONFIRMATION, owner, "Confirmation",
                     "Password changed correctly.");
-            sql = "UPDATE users" +
-                    "SET password =" + this.newPassword +
-                    "WHERE userId" + ManWorkerApplication.currentUser + ";";
-            stmt.executeUpdate(sql);
         }
     }
 

@@ -1,7 +1,6 @@
 package com.example.demo;
 
-import com.example.demo.models.Planning;
-import com.example.demo.models.Step;
+import com.example.demo.model.Planning;
 import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;

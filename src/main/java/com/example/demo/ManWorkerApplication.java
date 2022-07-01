@@ -1,9 +1,6 @@
 package com.example.demo;
 
-import com.example.demo.models.Planning;
-import com.example.demo.models.Step;
-import com.example.demo.models.Team;
-import com.example.demo.models.User;
+import com.example.demo.model.Step;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,12 +11,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import org.controlsfx.control.action.Action;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.util.ArrayList;
 
 /*
 
@@ -27,12 +22,10 @@ TODOS
 
 Home:
 - fix aesthetic
-- check if the end date is after the start date
-- add team to database with insert
 - test the app to find if there are bugs
 
-- work with idTeam when adding a new planning
-- i just want to see my plannings
+In the end:
+- junit
 */
 
 public class ManWorkerApplication extends Application {
@@ -88,7 +81,6 @@ public class ManWorkerApplication extends Application {
 
 
     public static void main(String[] args) {
-        Step step = new Step("AAA", "BBB");
         launch();
     }
     
