@@ -1,7 +1,7 @@
 package com.example.demo;
 
-import com.example.demo.model.Planning;
-import com.example.demo.model.Team;
+import com.example.demo.backend.Planning;
+import com.example.demo.backend.Team;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,6 +21,7 @@ import java.sql.Statement;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
 
@@ -79,14 +80,9 @@ public class PlanningController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
         if(teamChoice != null){
-            /*for(Team t: ManWorkerApplication.teams){
-                teamChoice.getItems().add(t.getName());
-            }*/
-
-            Statement stmt = null;
             try {
-                stmt = ManWorkerApplication.databaseLink.createStatement();
-                String sql = "SELECT name FROM teams;";
+                Statement stmt = ManWorkerApplication.databaseLink.createStatement();
+                String sql = "SELECT name FROM teams where username = '" + ManWorkerApplication.currentUser + "'";
                 ResultSet result = stmt.executeQuery(sql);
 
                 while(result.next())
@@ -104,27 +100,37 @@ public class PlanningController implements Initializable {
         endCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("endDate"));
         teamCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("team"));
 
-        Statement stmt = null;
         try {
-            stmt = ManWorkerApplication.databaseLink.createStatement();
-            String sql = "SELECT * FROM plannings;";
+            Statement stmt = ManWorkerApplication.databaseLink.createStatement();
+            String sql = "SELECT * FROM plannings where username = '" + ManWorkerApplication.currentUser + "'";
             ResultSet result = stmt.executeQuery(sql);
+            Planning currentPlanning = null;
 
             /* result has the rows that are in the database, each row is used to create new planning objects
             and put them into the tableView in the interface
              */
             while(result.next()){
-                table.getItems().add(new Planning(result.getInt("idPlanning"), result.getTimestamp("startDate"),
-                                result.getTimestamp("endDate"), result.getString("name"),
-                                result.getString("description"), new Team("Name"), result.getDouble("budget")));
+                /* For each result that we get from the database ( result is the object where we have all the rows we
+                   create a new planning object, and we put it to the table
+                */
+                currentPlanning = new Planning(result.getInt("idPlanning"), result.getTimestamp("startDate"),
+                        result.getTimestamp("endDate"), result.getString("name"),
+                        result.getString("description"), new Team("Name"), result.getDouble("budget"));
+
+                table.getItems().add(currentPlanning);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
+        /*
+            This part is when we to the row we load a content. <>
+         */
         table.setRowFactory( tv -> {
+            // <> generics for example Array<String>, Planning is the object inside the tableRow
             TableRow<Planning> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
+                // we have to say !row otherwise we can click everywhre and it shows error
                 if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
                     FXMLLoader loader = loadContent("addSteps.fxml");
                     addStepsController = loader.getController();
@@ -135,62 +141,39 @@ public class PlanningController implements Initializable {
         });
     }
 
-    public static boolean isNumeric(String string) {
-        System.out.println(String.format("Parsing string: \"%s\"", string));
-
-        if(string == null || string.equals("")) {
-            System.out.println("String cannot be parsed, it is null or empty.");
-            return false;
-        }
-
-        try {
-            Integer.parseInt(string);
-            return true;
-        } catch (NumberFormatException e) {
-            System.out.println("Input String cannot be parsed to Integer.");
-        }
-        return false;
-    }
-
     @FXML
-    public void addPlanning(ActionEvent e) throws IOException, SQLException {
+    public void addPlanning() throws SQLException {
+        // We convert in Java Date because before converting it was in DatePicker (javaFX)
+        String[] fieldName = {"name", name.getText()};
+
+        String messageName = Utils.checkField(fieldName);
+        String messageTeam = Utils.checkIfBlank(teamChoice.getValue(), "team");
+
         Date d1 = convertDate(startDate);
         Date d2 = convertDate(endDate);
-        if(!isNumeric(budget.getText())){
+
+        if(!Utils.isNumeric(budget.getText())){
             showAlert(Alert.AlertType.ERROR, owner, "Error",
                     "Budget text field has to be numeric.");
-            return;
         }
-        else if (name.getText().isEmpty()) {
+        else if (messageName.compareTo("Confirm") != 0){
             showAlert(Alert.AlertType.ERROR, owner, "Error",
-                    "name text field cannot be blank.");
-            name.requestFocus();
-
+                    messageName);
         }
-
-        else if(name.getText().length() < 2 || name.getText().length() >25 ){
-            showAlert(Alert.AlertType.ERROR, owner, "Error",
-                    "First name text field cannot be less than 2 and greator than 25 characters.");
-
-            name.requestFocus();
-        }
-
+        // Check if date1 is date 1 before date 2, we already converted Datepicker to Date Java with this line Date d1 = convert(startDate)
         else if(d1.after(d2)){
             showAlert(Alert.AlertType.ERROR,owner, "Error",
                     "Start Date should be before End Date");
-            System.out.println("the type is " + ((Object)d1).getClass().getSimpleName());
         }
-        else if(teamChoice.getItems().isEmpty()){
+        else if(messageTeam.compareTo("Confirm") != 0){
             showAlert(Alert.AlertType.ERROR, owner, "Error",
-                    "You has to select the team");
-
-            return;
+                    messageTeam);
         }
         else{
             // adding new planning into the table and into the database
 
-            String query = " insert into plannings(name, description, budget, startDate, endDate, teamName)"
-                    + " values (?, ?, ?, ?, ?, ?)";
+            String query = " insert into plannings(name, description, budget, startDate, endDate, teamName, username)"
+                    + " values (?, ?, ?, ?, ?, ?, ?)";
 
             // create the mysql insert preparedstatement
             PreparedStatement preparedStmt = databaseLink.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -200,12 +183,18 @@ public class PlanningController implements Initializable {
             preparedStmt.setDate(4, new java.sql.Date(convertDate(startDate).getTime()));
             preparedStmt.setDate    (5, new java.sql.Date(convertDate(endDate).getTime()));
             preparedStmt.setString    (6, teamChoice.getValue());
+            preparedStmt.setString(7, ManWorkerApplication.currentUser);
 
+            // execute is when you press the bottom to execute a query
+            preparedStmt.executeUpdate();
+
+            // GenerateKeys we use because is autoincremented from sql and we cannot know this withou getGeneratedKey()
             ResultSet rs = preparedStmt.getGeneratedKeys();
 
             int idPlanning = 0;
 
             if (rs.next()) {
+                // ???
                 idPlanning = rs.getInt(1);
             }
 
@@ -263,8 +252,4 @@ public class PlanningController implements Initializable {
     }
 
 
-
-//    private boolean validate(int text){
-//        return text.matches("[0-9]*");
-//    }
 }

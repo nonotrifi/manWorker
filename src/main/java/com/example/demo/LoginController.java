@@ -27,28 +27,41 @@ public class LoginController{
     @FXML
     public void goToHome(ActionEvent e) throws IOException, SQLException {
 
+        String message = isValidated(username.getText(), password.getText());
+
+        if(message.compareTo("Confirm") == 0){
+            // Go to home
+            ManWorkerApplication.loadPage("home.fxml", e);
+            // Change the current user
+            ManWorkerApplication.currentUser = username.getText();
+        }
+        else{
+            showAlert(Alert.AlertType.ERROR, owner, "Error",
+                    message);
+        }
+    }
+
+    public String isValidated(String username, String password) throws SQLException {
         Statement stmt = ManWorkerApplication.databaseLink.createStatement();
 
-        String sql = "SELECT password FROM users WHERE name = \'" + username.getText() +"\';";
+        String sql = "SELECT password FROM users WHERE name = '" + username +"';";
 
         ResultSet result = stmt.executeQuery(sql);
 
-        if(result == null)
-            showAlert(Alert.AlertType.ERROR, owner, "Error",
-                    "Username is worng.");
+        if(!result.next()){
+            return "Username is wrong";
+        }
         else {
-            result.first();
-            String userPassword = result.getString("password");
+            System.out.println(result.getString(1));
+            String realPassword = result.getString("password");
 
-            if (userPassword.compareTo(password.getText()) == 0) {
-                ManWorkerApplication.loadPage("home.fxml", e);
-                ManWorkerApplication.currentUser= username.getText();
+            if (realPassword.compareTo(password) == 0) {
+                return "Confirm";
             }
             else
-                showAlert(Alert.AlertType.ERROR, owner, "Error",
-                        "Password is wrong.");
+                return "Password is wrong";
         }
-
     }
+
 
 }

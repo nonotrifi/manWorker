@@ -33,10 +33,11 @@ public class TeamsController{
             //ManWorkerApplication.teams.add(new Team(name.getText()));
 
             try{
-                String sql = "INSERT INTO teams(name) VALUES (?);";
+                String sql = "INSERT INTO teams(name, username) VALUES (?, ?);";
 
                 PreparedStatement preparedStmt = databaseLink.prepareStatement(sql);
                 preparedStmt.setString (1, name.getText());
+                preparedStmt.setString(2, ManWorkerApplication.currentUser);
 
                 preparedStmt.execute();
 

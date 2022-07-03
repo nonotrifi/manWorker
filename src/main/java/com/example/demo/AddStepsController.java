@@ -1,7 +1,7 @@
 package com.example.demo;
 
-import com.example.demo.model.Planning;
-import com.example.demo.model.Step;
+import com.example.demo.backend.Planning;
+import com.example.demo.backend.Step;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

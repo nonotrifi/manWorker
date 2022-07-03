@@ -3,13 +3,16 @@ module com.example.demo {
     requires javafx.fxml;
     requires org.controlsfx.controls;
 
-
-//    requires java.sql;
     requires javafx.graphics;
     requires java.sql;
+    requires org.testng;
+    requires junit;
 
-    opens com.example.demo;
     exports com.example.demo;
-    opens com.example.demo.model;
+    opens com.example.demo;
+    opens com.example.demo.tests;
+    exports com.example.demo.tests;
+    exports com.example.demo.backend;
+    opens com.example.demo.backend;
 }
 

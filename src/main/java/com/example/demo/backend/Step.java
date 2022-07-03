@@ -1,6 +1,4 @@
-package com.example.demo.model;
-
-import java.util.ArrayList;
+package com.example.demo.backend;
 
 public class Step {
     private int idStep;

@@ -1,6 +1,4 @@
-package com.example.demo.model;
-
-import java.util.Date;
+package com.example.demo.backend;
 
 public class User {
     private String username;

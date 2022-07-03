@@ -1,6 +1,5 @@
 package com.example.demo;
 
-import com.example.demo.model.Step;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -40,8 +39,7 @@ public class ManWorkerApplication extends Application {
 
     public static Connection databaseLink;
 
-    @Override
-    public void start(Stage stage) throws IOException {
+    public static void connectToDatabase(){
         String dbName = "mydb";
         String dbUsername = "root";
         String dbPassword = "admin";
@@ -54,6 +52,11 @@ public class ManWorkerApplication extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void start(Stage stage) throws IOException {
+        connectToDatabase();
 
         FXMLLoader fxmlLoader = new FXMLLoader(ManWorkerApplication.class.getResource("logIn.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), FRAME_WIDTH, FRAME_HEIGHT);

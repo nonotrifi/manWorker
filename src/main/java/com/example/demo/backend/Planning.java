@@ -1,4 +1,4 @@
-package com.example.demo.model;
+package com.example.demo.backend;
 
 import java.util.ArrayList;
 import java.util.Date;
