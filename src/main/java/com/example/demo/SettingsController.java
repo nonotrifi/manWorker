@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import static com.example.demo.ManWorkerApplication.databaseLink;
-import static com.example.demo.ManWorkerApplication.showAlert;
+import static com.example.demo.Utils.showAlert;
 
 public class SettingsController{
 
@@ -29,9 +29,10 @@ public class SettingsController{
     @FXML
     Window owner;
     @FXML
-    public void saveNewPassword(ActionEvent e) throws SQLException {
-        Statement stmt = ManWorkerApplication.databaseLink.createStatement();
+    public void saveNewPassword() throws SQLException {
+        String[] newPasswordField = {"new password", newPassword.getText()};
 
+        // ? means something you want to replace with prepared Statement;
         String sql = "SELECT password FROM users WHERE name = ?;";
 
         PreparedStatement preparedStmt = databaseLink.prepareStatement(sql);
@@ -39,42 +40,42 @@ public class SettingsController{
 
         ResultSet result = preparedStmt.executeQuery();
 
-        if(result == null){
-            ManWorkerApplication.showAlert(Alert.AlertType.ERROR, owner, "Error",
-                    "An error occurred.");
+        if(!result.next()){
+            Utils.showAlert(Alert.AlertType.ERROR, owner, "Error",
+                    "The username you put is wrong.");
             return;
         }
 
-        result.next();
-
         String password = result.getString("password");
+        String newPasswordMessage = Utils.checkField(newPasswordField);
 
-        if(result.wasNull()){
-            ManWorkerApplication.showAlert(Alert.AlertType.ERROR, owner, "Error",
-                    "The username is wrong.");
-            name.requestFocus();
-        }
-        else if(oldPassword.getText().compareTo(password) != 0){
-            ManWorkerApplication.showAlert(Alert.AlertType.ERROR, owner, "Error",
+        if(oldPassword.getText().compareTo(password) != 0){
+            Utils.showAlert(Alert.AlertType.ERROR, owner, "Error",
                     "The old password is wrong.");
             oldPassword.requestFocus();
+            return;
         }
-        else if(newPassword.getText().length() < 5 || newPassword.getText().length() > 25){
+
+        if(!Utils.isConfirm(newPasswordMessage)){
             showAlert(Alert.AlertType.ERROR, owner, "Error",
-                    "Password text field cannot be less than 5 and greator than 25 characters.");
+                    newPasswordMessage);
             newPassword.requestFocus();
+            return;
         }
-        else{
-            sql = "UPDATE users SET password = ? WHERE name = ?;";
 
-            preparedStmt = databaseLink.prepareStatement(sql);
-            preparedStmt.setString(1, newPassword.getText());
-            preparedStmt.setString(2, name.getText());
-            preparedStmt.executeUpdate();
+        changePassword(newPassword.getText(), name.getText());
+    }
 
-            showAlert(Alert.AlertType.CONFIRMATION, owner, "Confirmation",
-                    "Password changed correctly.");
-        }
+    public void changePassword(String newPassword, String username) throws SQLException {
+        String sql = "UPDATE users SET password = ? WHERE name = ?;";
+
+        PreparedStatement preparedStmt = databaseLink.prepareStatement(sql);
+        preparedStmt.setString(1, newPassword);
+        preparedStmt.setString(2, username);
+        preparedStmt.executeUpdate();
+
+        showAlert(Alert.AlertType.CONFIRMATION, owner, "Confirmation",
+                "Password changed correctly.");
     }
 
 }

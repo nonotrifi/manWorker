@@ -30,7 +30,6 @@ In the end:
 public class ManWorkerApplication extends Application {
     @FXML
     private Label showUsername;
-    public static final int FRAME_HEIGHT = 800, FRAME_WIDTH = 1000;
 
     //static ArrayList<Planning> plannings = new ArrayList<Planning>();
     //static ArrayList<Team> teams = new ArrayList<>();
@@ -43,7 +42,8 @@ public class ManWorkerApplication extends Application {
         String dbName = "mydb";
         String dbUsername = "root";
         String dbPassword = "admin";
-        String url = "jdbc:mysql://localhost/" + dbName + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+        String url = "jdbc:mysql://localhost/" + dbName
+                + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -59,27 +59,9 @@ public class ManWorkerApplication extends Application {
         connectToDatabase();
 
         FXMLLoader fxmlLoader = new FXMLLoader(ManWorkerApplication.class.getResource("logIn.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), FRAME_WIDTH, FRAME_HEIGHT);
+        Scene scene = new Scene(fxmlLoader.load(), Utils.FRAME_WIDTH, Utils.FRAME_HEIGHT);
         stage.setScene(scene);
         stage.show();
-    }
-
-
-    public static void loadPage(String pageName, ActionEvent e) throws IOException{
-        FXMLLoader fxmlLoader = new FXMLLoader(ManWorkerApplication.class.getResource(pageName));
-        Scene scene = new Scene(fxmlLoader.load(), FRAME_WIDTH, FRAME_HEIGHT);
-        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    public static void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.initOwner(owner);
-        alert.show();
     }
 
 

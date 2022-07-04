@@ -26,27 +26,53 @@ public class ManWorkerTest {
 
     @Test
     public void testBlank(){
-        String message1 = Utils.checkIfBlank("", "username");
-        assertEquals(0, message1.compareTo("username field cannot be blank"));
+        String[] field = {"username", "   "};
+        String blankMessage = Utils.checkIfBlank(field);
+        assertEquals(0, blankMessage.compareTo("username field cannot be blank"));
 
-        String message2 = Utils.checkIfBlank("Mark", "username");
-        assertEquals(0, message2.compareTo("Confirm"));
+        field[1] = "Riccardo";
+
+        blankMessage = Utils.checkIfBlank(field);
+        assertEquals(0, blankMessage.compareTo("Confirm"));
     }
 
     @Test
     public void testLength(){
-        String message1 = Utils.checkLength("m", "username");
-        assertEquals(0, message1.compareTo("username cannot be less than 5 and greator than 25 characters."));
+        String[] field = {"username", "m"};
 
-        String message2 = Utils.checkIfBlank("riccardo", "username");
-        assertEquals(0, message2.compareTo("Confirm"));
+        String lengthMessage = Utils.checkLength(field);
+        assertEquals(0, lengthMessage.compareTo("username cannot be less than 5 and greater than 25 characters."));
+
+        field[1] = "riccardo";
+
+        lengthMessage = Utils.checkIfBlank(field);
+        assertEquals(0, lengthMessage.compareTo("Confirm"));
     }
 
     @Test
-    public void testRegisterMessage() throws SQLException {
+    public void testRegisterMessage(){
         String message = registrationController.registerMessage("mariam", "ricccardo", "bianchi",
                 "riccardo@gmail.com", "123456", "123456");
 
         assertEquals(0, message.compareTo("Confirm"));
+
+        message = registrationController.registerMessage("m", "ricccardo", "bianchi",
+                "riccardo@gmail.com", "123456", "123456");
+
+        assertEquals(0, message.compareTo("username cannot be less than 5 and greater than 25 characters."));
     }
+
+    @Test
+    public void testIsValidated() throws SQLException {
+        String loginMessage = loginController.isValidated("mariam", "123456");
+        assertEquals(0, loginMessage.compareTo("Confirm"));
+
+        loginMessage = loginController.isValidated("mariam", "12345");
+        assertEquals(0, loginMessage.compareTo("Password is wrong"));
+
+        loginMessage = loginController.isValidated("mar", "12345");
+        assertEquals(0, loginMessage.compareTo("Username is wrong"));
+    }
+
+
 }

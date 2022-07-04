@@ -7,11 +7,13 @@ import javafx.scene.control.TextField;
 import javafx.stage.Window;
 
 import java.io.IOException;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static com.example.demo.ManWorkerApplication.showAlert;
+import static com.example.demo.ManWorkerApplication.databaseLink;
+import static com.example.demo.Utils.showAlert;
 
 public class LoginController{
 
@@ -21,7 +23,7 @@ public class LoginController{
 
     @FXML
     public void goToRegistration(ActionEvent e) throws IOException {
-        ManWorkerApplication.loadPage("registration.fxml", e);
+        Utils.loadPage("registration.fxml", e);
     }
 
     @FXML
@@ -29,9 +31,9 @@ public class LoginController{
 
         String message = isValidated(username.getText(), password.getText());
 
-        if(message.compareTo("Confirm") == 0){
+        if(Utils.isConfirm(message)){
             // Go to home
-            ManWorkerApplication.loadPage("home.fxml", e);
+            Utils.loadPage("home.fxml", e);
             // Change the current user
             ManWorkerApplication.currentUser = username.getText();
         }
@@ -41,26 +43,33 @@ public class LoginController{
         }
     }
 
+    /*
+        createStatement is when we want to create a command for the database. Could be a query (SELECT) or an update (INSERT, DEELETE ..)
+     */
     public String isValidated(String username, String password) throws SQLException {
-        Statement stmt = ManWorkerApplication.databaseLink.createStatement();
+        String sql = "SELECT password FROM users WHERE name = ?;";
 
-        String sql = "SELECT password FROM users WHERE name = '" + username +"';";
+        PreparedStatement preparedStmt = databaseLink.prepareStatement(sql);
+        preparedStmt.setString (1, username);
 
-        ResultSet result = stmt.executeQuery(sql);
+        ResultSet result = preparedStmt.executeQuery();
 
+        // CHecking if the output is empty
         if(!result.next()){
             return "Username is wrong";
         }
-        else {
-            System.out.println(result.getString(1));
-            String realPassword = result.getString("password");
+        String realPassword = result.getString("password");
 
-            if (realPassword.compareTo(password) == 0) {
-                return "Confirm";
-            }
-            else
-                return "Password is wrong";
+        System.out.println(realPassword);
+        System.out.println(password);
+
+        if (realPassword.compareTo(password) == 0) {
+            System.out.println("Hello");
+            return Utils.CONFIRM_MESSAGE;
         }
+        else
+            return "Password is wrong";
+
     }
 
 

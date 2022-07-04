@@ -132,6 +132,6 @@
             </AnchorPane>
          </left>
       </BorderPane>
-      <AnchorPane fx:id="content" layoutX="176.0" layoutY="56.0" prefHeight="344.0" prefWidth="524.0" />
+      <AnchorPane fx:id="homeContent" layoutX="176.0" layoutY="56.0" prefHeight="344.0" prefWidth="524.0" />
    </children>
 </AnchorPane>
