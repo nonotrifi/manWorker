@@ -38,7 +38,7 @@ public class RegistrationController{
     // !=
     @FXML
     public void goToHome(ActionEvent e) throws IOException, SQLException {
-        if (this.isValidated()) {
+        if (this.isValidated(username.getText(), firstname.getText(), lastname.getText(), email.getText(), password.getText(), password2.getText())) {
             registerUser(username.getText(), firstname.getText(), lastname.getText(), email.getText(), password.getText());
             Utils.loadPage("home.fxml", e);
         }
@@ -72,25 +72,28 @@ public class RegistrationController{
     Means of firstname.requestForcus() : surligner l'erreur en gras
      */
     @FXML
-    private boolean isValidated() throws SQLException {
+    private boolean isValidated(String username, String firstname, String lastname, String email, String password, String password2) throws SQLException {
         Window owner = registerButton.getScene().getWindow();
 
         String sql = "SELECT name FROM users WHERE name = ?;";
 
         PreparedStatement preparedStmt = databaseLink.prepareStatement(sql);
-        preparedStmt.setString(1, username.getText());
+        preparedStmt.setString(1, username);
 
         // executeQeury is the bottom that we press in workbrench to execute
         ResultSet result = preparedStmt.executeQuery();
 
+        /* If we find another user with the same username from the database,
+        it means that the username is already used
+         */
         if(result.next()){
             showAlert(Alert.AlertType.ERROR, owner, "Error",
                     "This username is already used");
             return false;
         }
 
-        String message = registerMessage(username.getText(), firstname.getText(), lastname.getText(),
-                email.getText(), password.getText(), password2.getText());
+        String message = registerMessage(username, firstname, lastname,
+                email, password, password2);
 
         if(!Utils.isConfirm(message)){
             showAlert(Alert.AlertType.ERROR, owner, "Error",

@@ -75,7 +75,6 @@ public class AddStepsController{
              */
 
             while(result.next()){
-                System.out.println(result.getString("description"));
                 table.getItems().add(new Step (result.getInt("idStep"),result.getString("name"), result.getString("description")
                 ));
             }
@@ -110,8 +109,6 @@ public class AddStepsController{
         preparedStmt.setString (1, name.getText());
         preparedStmt.setString   (2, description.getText());
         preparedStmt.setInt(3, planning.getIdPlanning());
-
-        System.out.println(planning.getIdPlanning());
 
         preparedStmt.executeUpdate();
 

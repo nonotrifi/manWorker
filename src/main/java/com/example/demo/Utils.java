@@ -40,7 +40,7 @@ public class Utils {
     public static String checkLength(String[] field){
         String fieldName = field[0], fieldValue = field[1];
 
-        if(fieldValue.length() < 5 || fieldValue.length() > 25){
+        if(fieldValue.length() < 2 || fieldValue.length() > 25){
             return fieldName + " cannot be less than 5 and greater than 25 characters.";
         }
 
@@ -138,6 +138,10 @@ public class Utils {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.initOwner(owner);
+        alert.setResizable(true);
+        alert.getDialogPane().setPrefSize(280, 150);
+
         alert.show();
+
     }
 }
