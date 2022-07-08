@@ -9,8 +9,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 
+
 import java.io.IOException;
 import java.net.URL;
+
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -23,7 +25,7 @@ public class HomeController implements Initializable {
     private AnchorPane slider;
 
     @FXML
-    private AnchorPane content;
+    private AnchorPane homeContent;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -64,41 +66,27 @@ public class HomeController implements Initializable {
 
     @FXML
     public void goToNewProject(){
-        loadContent("plannings.fxml");
+        Utils.loadContent("plannings.fxml", homeContent);
     }
 
     @FXML
     public void goToTeamsInterface(){
-        loadContent("teams.fxml");
+        Utils.loadContent("teams.fxml", homeContent);
+    }
+
+    @FXML
+    public void goToConnectionDb(){
+        Utils.loadContent("connectToDatabase.fxml", homeContent);
     }
 
     @FXML
     public void goToSettings(){
-        loadContent("settings.fxml");
+        Utils.loadContent("settings.fxml", homeContent);
     }
 
 
     public void backToLogin(ActionEvent e) throws IOException {
-        ManWorkerApplication.loadPage("logIn.fxml", e);
-    }
-
-    @FXML
-    public void loadContent(String contentName){
-        FXMLLoader loader = new FXMLLoader(HomeController.class.getResource(contentName));
-        AnchorPane root;
-
-        for(Object c: content.getChildren().toArray()){
-            content.getChildren().remove(c);
-        }
-
-        try {
-            root = loader.load();
-            content.getChildren().add(root);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-            return;
-        }
-
+        Utils.loadPage("logIn.fxml", e);
     }
 
 }

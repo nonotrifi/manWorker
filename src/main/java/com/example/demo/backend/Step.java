@@ -1,12 +1,14 @@
-package com.example.demo.models;
-
-import java.util.ArrayList;
+package com.example.demo.backend;
 
 public class Step {
+    private int idStep;
     private String name;
     private String description;
 
-    public Step(String name, String description){
+
+    public Step(int idStep, String name, String description){
+        this.idStep = idStep;
+
         this.name = name;
         this.description = description;
 
@@ -22,11 +24,19 @@ public class Step {
         return name;
     }
 
-    public String getDescription(){
-        return description;
+    public void setId(int idStep){
+        this.idStep = idStep;
     }
 
-    @Override
+    public int getIdStep(){
+        return idStep;
+    }
+
+    public String getDescription(){
+        return this.description;
+    }
+
+   @Override
     public String toString(){
         return "Name: " + this.name + "\n" + "Description: " + this.description;
     }

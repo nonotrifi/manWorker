@@ -1,7 +1,8 @@
 package com.example.demo;
 
-import com.example.demo.models.Planning;
-import com.example.demo.models.Step;
+import com.example.demo.backend.Planning;
+import com.example.demo.backend.Step;
+import com.example.demo.exceptions.PlanningException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,11 +12,16 @@ import javafx.stage.Window;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ResourceBundle;
 
-import static com.example.demo.ManWorkerApplication.showAlert;
+import static com.example.demo.ManWorkerApplication.databaseLink;
+import static com.example.demo.Utils.showAlert;
 
-public class AddStepsController implements Initializable{
+public class AddStepsController{
 
     private Planning planning;
     @FXML
@@ -37,48 +43,104 @@ public class AddStepsController implements Initializable{
 
     Window owner;
 
-    public void setPlanning(Planning planning){
-        this.planning = planning;
-        if(planning != null)
-            planningName.setText("Add steps to: " + planning.getName());
+    public void setUp(Planning planning) throws PlanningException {
+        if(planning == null)
+            throw new PlanningException();
 
-        for(Step step: planning.getSteps())
-            table.getItems().add(step);
+        /* Set current planning */
+        this.planning = planning;
+
+        planningNameSetUp();
+        tableSetUp();
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void planningNameSetUp(){
+        planningName.setText("Add steps to: " + planning.getName());
+    }
+
+    public void tableSetUp(){
         nameCol.setCellValueFactory(new PropertyValueFactory<Step, String>("name"));
         descriptionCol.setCellValueFactory(new PropertyValueFactory<Step, String>("description"));
+
+        String sql = "SELECT * FROM steps WHERE idPlanning = ?";
+
+        try {
+            PreparedStatement preparedStmt = databaseLink.prepareStatement(sql);
+            preparedStmt.setInt (1, planning.getIdPlanning());
+
+            ResultSet result = preparedStmt.executeQuery();
+
+            /* result has the rows that are in the database, each row is used to create new planning objects
+            and put them into the tableView in the interface
+             */
+
+            while(result.next()){
+                table.getItems().add(new Step (result.getInt("idStep"),result.getString("name"), result.getString("description")
+                ));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @FXML
-    public void insertStep(ActionEvent e) throws IOException {
-        if (name.getText().isEmpty()) {
+    public void addStep() throws SQLException {
+        String[] stepNameField = {"step name", name.getText()};
+        String stepNameMessage = Utils.checkField(stepNameField);
+
+        if(!Utils.isConfirm(stepNameMessage)){
             showAlert(Alert.AlertType.ERROR, owner, "Error",
-                    "name text field cannot be blank.");
+                    stepNameMessage);
             name.requestFocus();
-
+            return;
         }
 
-        else if(name.getText().length() < 2 || name.getText().length() >25 ){
-            showAlert(Alert.AlertType.ERROR, owner, "Error",
-                    "First name text field cannot be less than 2 and greator than 25 characters.");
-            name.requestFocus();
-        }
-        else{
-            Step newStep = new Step(name.getText(), description.getText());
-            planning.addStep(newStep);
-
-            table.getItems().add(newStep);
-        }
+        insertNewStep();
 
     }
 
+    public void insertNewStep() throws SQLException {
+        String query = "insert into steps(name, description, idPlanning)"
+                + " values (?, ?, ?)";
+
+
+        // create the mysql insert preparedstatement
+        PreparedStatement preparedStmt = databaseLink.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        preparedStmt.setString (1, name.getText());
+        preparedStmt.setString   (2, description.getText());
+        preparedStmt.setInt(3, planning.getIdPlanning());
+
+        preparedStmt.executeUpdate();
+
+        ResultSet rs = preparedStmt.getGeneratedKeys();
+
+        int idStep = 0;
+
+        if (rs.next()) {
+            idStep = rs.getInt(1);
+        }
+
+        Step newStep = new Step(idStep, name.getText(), description.getText() );
+
+        planning.addStep(newStep);
+
+        table.getItems().add(newStep);
+    }
+
     @FXML
-    private void deleteStep(ActionEvent e){
+    private void deleteStep() throws SQLException {
         Step step = (Step)table.getSelectionModel().getSelectedItem();
+        if(step == null)
+            return;
         table.getItems().remove(step);
-        planning.getSteps().remove(step);
+
+        String sql = "DELETE FROM steps WHERE idStep = ?";
+
+        PreparedStatement pstmt = databaseLink.prepareStatement(sql);
+
+        // set the corresponding param
+        pstmt.setInt(1, step.getIdStep());
+        // execute the delete statement
+        pstmt.executeUpdate();
     }
 }

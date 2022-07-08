@@ -1,21 +1,23 @@
-package com.example.demo.models;
+package com.example.demo.backend;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 public class Planning {
+    private int idPlanning;
     private String name;
     private String description; 
     private Date startDate;
     private Date endDate;
-    private float budget;
+    private double budget;
     private ArrayList<Step> steps;
     private Team team;
 
-    public Planning(Date stardDate, Date endDate, String title, String description, Team team, float budget){
+    public Planning(int idPlanning, Date startDate, Date endDate, String title, String description, Team team, double budget){
+        this.idPlanning = idPlanning;
         this.name = title;
         this.description = description;
-        this.startDate = stardDate;
+        this.startDate = startDate;
         this.endDate = endDate;
         this.budget = budget;
         this.team = team;
@@ -40,19 +42,11 @@ public class Planning {
 
     /* ------------------------------------- */
 
-    public void setEndDate(Date newEndDate){
-        this.endDate = newEndDate;
-    }
-
     public Date getEndDate() {
         return endDate;
     }
 
     /* ------------------------------------- */
-
-    public void setStartDate(Date newstartdDate){
-        this.startDate = newstartdDate;
-    }
 
     public Date getStartDate() {
         return startDate;
@@ -60,19 +54,11 @@ public class Planning {
 
     /* ------------------------------------- */
 
-    public void setBudget (float newBudget){
-        this.budget = newBudget;
-    }
-
-    public float getBudget(){
+    public double getBudget(){
         return this.budget;
     }
 
     /* ------------------------------------- */
-
-    public void setDescription (String newDescription){
-        this.description = newDescription;
-    }
 
     public String getDescription() {
         return description;
@@ -86,8 +72,14 @@ public class Planning {
         return this.team;
     }
 
-    public void modifyStepName(int indexStep, String newName){
-        this.steps.get(indexStep).setName(newName);
+    /* ------------------------------------- */
+
+    public int getIdPlanning() {
+        return idPlanning;
+    }
+
+    public void setIdPlanning(int idPlanning){
+        this.idPlanning = idPlanning;
     }
 
 

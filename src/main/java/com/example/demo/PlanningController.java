@@ -1,8 +1,8 @@
 package com.example.demo;
 
-import com.example.demo.models.Planning;
-import com.example.demo.models.Team;
-import javafx.beans.property.SimpleStringProperty;
+import com.example.demo.backend.Planning;
+import com.example.demo.backend.Team;
+import com.example.demo.exceptions.PlanningException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,14 +15,20 @@ import org.controlsfx.control.PrefixSelectionChoiceBox;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
 
-import static com.example.demo.ManWorkerApplication.teams;
-import static com.example.demo.ManWorkerApplication.showAlert;
+//import static com.example.demo.ManWorkerApplication.teams;
+import static com.example.demo.ManWorkerApplication.databaseLink;
+import static com.example.demo.Utils.showAlert;
 
 public class PlanningController implements Initializable {
 
@@ -66,13 +72,25 @@ public class PlanningController implements Initializable {
     private AddStepsController addStepsController;
 
 
+    // set date
+
+
     Window owner;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         if(teamChoice != null){
-            for(Team t: ManWorkerApplication.teams){
-                teamChoice.getItems().add(t.getName());
+            try {
+                Statement stmt = ManWorkerApplication.databaseLink.createStatement();
+                String sql = "SELECT name FROM teams where username = '" + ManWorkerApplication.currentUser + "'";
+                ResultSet result = stmt.executeQuery(sql);
+
+                while(result.next())
+                    teamChoice.getItems().add(result.getString("name"));
+
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
         }
 
@@ -80,124 +98,146 @@ public class PlanningController implements Initializable {
         descriptionCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("description"));
         budgetCol.setCellValueFactory(new PropertyValueFactory<Planning, Float>("budget"));
         startCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("startDate"));
+        endCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("endDate"));
         teamCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("team"));
 
-        for(Planning planning: ManWorkerApplication.plannings)
-            table.getItems().add(planning);
+        try {
+            Statement stmt = ManWorkerApplication.databaseLink.createStatement();
+            String sql = "SELECT * FROM plannings where username = '" + ManWorkerApplication.currentUser + "'";
+            ResultSet result = stmt.executeQuery(sql);
+            Planning currentPlanning = null;
 
+            /* result has the rows that are in the database, each row is used to create new planning objects
+            and put them into the tableView in the interface
+             */
+            while(result.next()){
+                /* For each result that we get from the database ( result is the object where we have all the rows we
+                   create a new planning object, and we put it to the table
+                */
+                currentPlanning = new Planning(result.getInt("idPlanning"), result.getTimestamp("startDate"),
+                        result.getTimestamp("endDate"), result.getString("name"),
+                        result.getString("description"), new Team("Name"), result.getDouble("budget"));
+
+                table.getItems().add(currentPlanning);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        /*
+            This part is when we to the row we load a content. <>
+         */
         table.setRowFactory( tv -> {
+            // <> generics for example Array<String>, Planning is the object inside the tableRow
             TableRow<Planning> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
+                // we have to say !row otherwise we can click everywhre and it shows error
                 if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
-                    FXMLLoader loader = loadContent("addSteps.fxml");
+                    FXMLLoader loader = Utils.loadContent("addSteps.fxml",contentPlanning);
                     addStepsController = loader.getController();
-                    addStepsController.setPlanning(row.getItem());
+
+                    try {
+                        addStepsController.setUp(row.getItem());
+                    } catch (PlanningException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             });
             return row ;
         });
     }
 
-    public static boolean isNumeric(String string) {
-        System.out.println(String.format("Parsing string: \"%s\"", string));
-
-        if(string == null || string.equals("")) {
-            System.out.println("String cannot be parsed, it is null or empty.");
-            return false;
-        }
-
-        try {
-            Integer.parseInt(string);
-            return true;
-        } catch (NumberFormatException e) {
-            System.out.println("Input String cannot be parsed to Integer.");
-        }
-        return false;
-    }
-
     @FXML
-    public void addPlanning(ActionEvent e) throws IOException {
-        if(!isNumeric(budget.getText())){
+    public void addPlanning() throws SQLException {
+        // We convert in Java Date because before converting it was in DatePicker (javaFX)
+        String[] planningNameField = {"name", name.getText()};
+        String[] teamField = {"team", teamChoice.getValue()};
+
+        String messageName = Utils.checkField(planningNameField);
+        String messageTeam = Utils.checkIfBlank(teamField);
+
+        Date d1 = Utils.convertDate(startDate);
+        Date d2 = Utils.convertDate(endDate);
+
+        if(!Utils.isNumeric(budget.getText())){
             showAlert(Alert.AlertType.ERROR, owner, "Error",
                     "Budget text field has to be numeric.");
-            return;
         }
-        else if (name.getText().isEmpty()) {
+        else if (!Utils.isConfirm(messageName)){
             showAlert(Alert.AlertType.ERROR, owner, "Error",
-                    "Name text field cannot be blank.");
-            name.requestFocus();
-
+                    messageName);
         }
-
-        else if(name.getText().length() < 2 || name.getText().length() >25 ){
-            showAlert(Alert.AlertType.ERROR, owner, "Error",
-                    "First name text field cannot be less than 2 and greater than 25 characters.");
-            name.requestFocus();
+        // Check if date1 is date 1 before date 2, we already converted Datepicker to Date Java with this line Date d1 = convert(startDate)
+        else if(d1.after(d2)){
+            showAlert(Alert.AlertType.ERROR,owner, "Error",
+                    "Start Date should be before End Date");
         }
-
-        else if(teamChoice.getItems().isEmpty()){
+        else if(!Utils.isConfirm(messageTeam)){
             showAlert(Alert.AlertType.ERROR, owner, "Error",
-                    "You have to select the team");
-            return;
+                    messageTeam);
         }
         else{
-            Planning newPlanning = new Planning(convertDate(startDate), convertDate(endDate),
-                    name.getText(), description.getText(), searchTeam(teamChoice.getValue()), Float.parseFloat(budget.getText()));
-            ManWorkerApplication.plannings.add(newPlanning);
+            insertNewPlanning(name.getText(), description.getText(), Float.parseFloat(budget.getText()),
+                    new java.sql.Date(Utils.convertDate(startDate).getTime()), new java.sql.Date(Utils.convertDate(endDate).getTime()),
+                    teamChoice.getValue(), ManWorkerApplication.currentUser);
 
-            table.getItems().add(newPlanning);
         }
 
     }
 
+    public void insertNewPlanning(String name, String description, float budget, java.sql.Date startDate, java.sql.Date endDate, String teamName, String username) throws SQLException {
+        String query = " insert into plannings(name, description, budget, startDate, endDate, teamName, username)"
+                + " values (?, ?, ?, ?, ?, ?, ?)";
+
+        // create the mysql insert preparedstatement
+        PreparedStatement preparedStmt = databaseLink.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        preparedStmt.setString (1, name);
+        preparedStmt.setString   (2, description);
+        preparedStmt.setDouble(3, budget);
+        preparedStmt.setDate(4, startDate);
+        preparedStmt.setDate    (5, endDate);
+        preparedStmt.setString    (6, teamName);
+        preparedStmt.setString(7, username);
+
+        // execute is when you press the bottom to execute a query
+        preparedStmt.executeUpdate();
+
+        // GenerateKeys we use because is autoincremented from sql and we cannot know this withou getGeneratedKey()
+        ResultSet rs = preparedStmt.getGeneratedKeys();
+
+        int idPlanning = 0;
+
+        if (rs.next()) {
+            // ???
+            idPlanning = rs.getInt(1);
+        }
+
+        Planning newPlanning = new Planning(idPlanning, startDate, endDate,
+                name, description, new Team(teamName), budget);
+
+        table.getItems().add(newPlanning);
+    }
+
     @FXML
-    private void deletePlanning(ActionEvent e){
+    private void deletePlanning() throws SQLException {
         Planning planning = (Planning)table.getSelectionModel().getSelectedItem();
+        // Otherwise it tries to delete a non existing planning
+        if(planning == null)
+            return;
         table.getItems().remove(planning);
-        ManWorkerApplication.plannings.remove(planning);
-    }
 
-    @FXML
-    private void modifyPlanning(){
+        String sql = "DELETE FROM plannings WHERE idPlanning = ?";
 
-    }
+        PreparedStatement pstmt = databaseLink.prepareStatement(sql);
 
-    private Date convertDate(DatePicker date){
-        LocalDate localDate = date.getValue();
-        Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
-        return Date.from(instant);
-    }
+            // set the corresponding param
+            pstmt.setInt(1, planning.getIdPlanning());
+            // execute the delete statement
+            pstmt.executeUpdate();
 
-    private Team searchTeam(String teamName){
-        for(Team t: teams){
-            if(t.getName().compareTo(teamName) == 0)
-                return t;
-        }
 
-        return null;
+        //ManWorkerApplication.plannings.remove(planning);
     }
 
 
-    @FXML
-    public FXMLLoader loadContent(String contentName){
-        FXMLLoader loader = new FXMLLoader(HomeController.class.getResource(contentName));
-
-        for(Object c: contentPlanning.getChildren().toArray()){
-            contentPlanning.getChildren().remove(c);
-        }
-
-        try {
-            contentPlanning.getChildren().add(loader.load());
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-
-        return loader;
-    }
-
-
-
-//    private boolean validate(int text){
-//        return text.matches("[0-9]*");
-//    }
 }
