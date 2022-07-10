@@ -82,12 +82,17 @@ public class PlanningController implements Initializable {
 
         if(teamChoice != null){
             try {
-                Statement stmt = ManWorkerApplication.databaseLink.createStatement();
-                String sql = "SELECT name FROM teams where username = '" + ManWorkerApplication.currentUser + "'";
-                ResultSet result = stmt.executeQuery(sql);
+                String sql = "SELECT name FROM teams WHERE username = ?";
 
-                while(result.next())
-                    teamChoice.getItems().add(result.getString("name"));
+                PreparedStatement preparedStmt = databaseLink.prepareStatement(sql);
+                preparedStmt.setString (1, ManWorkerApplication.currentUser);
+
+                ResultSet result = preparedStmt.executeQuery();
+
+                while(result.next()){
+                    String nameCol = result.getString("name");
+                    teamChoice.getItems().add(nameCol);
+                }
 
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -102,9 +107,10 @@ public class PlanningController implements Initializable {
         teamCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("team"));
 
         try {
-            Statement stmt = ManWorkerApplication.databaseLink.createStatement();
-            String sql = "SELECT * FROM plannings where username = '" + ManWorkerApplication.currentUser + "'";
-            ResultSet result = stmt.executeQuery(sql);
+            String sql = "SELECT * FROM plannings where username = ?";
+            PreparedStatement preparedStmt = databaseLink.prepareStatement(sql);
+            preparedStmt.setString (1, ManWorkerApplication.currentUser);
+            ResultSet result = preparedStmt.executeQuery();
             Planning currentPlanning = null;
 
             /* result has the rows that are in the database, each row is used to create new planning objects
@@ -116,7 +122,7 @@ public class PlanningController implements Initializable {
                 */
                 currentPlanning = new Planning(result.getInt("idPlanning"), result.getTimestamp("startDate"),
                         result.getTimestamp("endDate"), result.getString("name"),
-                        result.getString("description"), new Team("Name"), result.getDouble("budget"));
+                        result.getString("description"), new Team(result.getString("teamName")), result.getDouble("budget"));
 
                 table.getItems().add(currentPlanning);
             }
@@ -125,26 +131,28 @@ public class PlanningController implements Initializable {
         }
 
         /*
-            This part is when we to the row we load a content. <>
+            This part is when we click the row we load a content. <>
+            tv is a parameter of a lambda function -
          */
         table.setRowFactory( tv -> {
             // <> generics for example Array<String>, Planning is the object inside the tableRow
-            TableRow<Planning> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
+            TableRow<Planning> planningRow = new TableRow<>();
+            planningRow.setOnMouseClicked(event -> {
                 // we have to say !row otherwise we can click everywhre and it shows error
-                if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+                if (event.getClickCount() == 2 && (! planningRow.isEmpty()) ) {
                     FXMLLoader loader = Utils.loadContent("addSteps.fxml",contentPlanning);
                     addStepsController = loader.getController();
-
                     try {
-                        addStepsController.setUp(row.getItem());
+                        // Telling to addStepsController what planning was clicked
+                        addStepsController.setUp(planningRow.getItem());
                     } catch (PlanningException e) {
                         throw new RuntimeException(e);
                     }
                 }
             });
-            return row ;
-        });
+            return planningRow ;
+        }
+        );
     }
 
     @FXML
@@ -202,7 +210,7 @@ public class PlanningController implements Initializable {
         // execute is when you press the bottom to execute a query
         preparedStmt.executeUpdate();
 
-        // GenerateKeys we use because is autoincremented from sql and we cannot know this withou getGeneratedKey()
+        // GenerateKeys we use because is autoincremented from sql and we cannot know this without getGeneratedKey()
         ResultSet rs = preparedStmt.getGeneratedKeys();
 
         int idPlanning = 0;

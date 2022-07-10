@@ -7,6 +7,7 @@ module com.example.demo {
     requires java.sql;
     requires org.testng;
     requires junit;
+    requires org.junit.jupiter.api;
 
     exports com.example.demo;
     opens com.example.demo;

@@ -57,7 +57,7 @@ public class Utils {
 
         if(!isConfirm(blankMessage))
             return blankMessage;
-        
+
         if(!isConfirm(lengthMessage))
             return lengthMessage;
 
@@ -65,9 +65,10 @@ public class Utils {
     }
 
     // Checkfields it's used for many fields (javafx)
-    public static String checkFields(String[][] fields){
+    public static String checkMultipleFields(String[][] fields){
         String message;
 
+        // for-each java
         for(String[] field: fields){
             // grace a la method static dans utils
             message = checkField(field);
@@ -80,6 +81,8 @@ public class Utils {
     }
     
     public static boolean isConfirm(String message){
+        Boolean k = message.compareTo(CONFIRM_MESSAGE) == 0;
+        System.out.println(k);
         return message.compareTo(CONFIRM_MESSAGE) == 0;
     }
 
@@ -108,6 +111,7 @@ public class Utils {
     public static FXMLLoader loadContent(String fxmlName, AnchorPane anchorPane){
         /* Loading the fxml file */
         FXMLLoader loader = new FXMLLoader(HomeController.class.getResource(fxmlName));
+
 
         /* Removing everything that's inside the anchor pane */
         for(Object c: anchorPane.getChildren().toArray()){

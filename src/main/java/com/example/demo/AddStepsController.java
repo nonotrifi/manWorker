@@ -43,6 +43,7 @@ public class AddStepsController{
 
     Window owner;
 
+    //adding step to the planning
     public void setUp(Planning planning) throws PlanningException {
         if(planning == null)
             throw new PlanningException();
@@ -54,9 +55,11 @@ public class AddStepsController{
         tableSetUp();
     }
 
+    // title of the step of the planning
     public void planningNameSetUp(){
         planningName.setText("Add steps to: " + planning.getName());
     }
+
 
     public void tableSetUp(){
         nameCol.setCellValueFactory(new PropertyValueFactory<Step, String>("name"));

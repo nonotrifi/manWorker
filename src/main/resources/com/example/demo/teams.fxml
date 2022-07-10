@@ -5,10 +5,20 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane  prefHeight="436.0" prefWidth="800.0"  xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.TeamsController">
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<AnchorPane prefHeight="436.0" prefWidth="800.0" style="-fx-background-color: #bbdefb;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.TeamsController">
     <children>
-        <TextField fx:id="name" layoutX="214.0" layoutY="159.0" maxWidth="150.0" minWidth="150.0" prefHeight="31.0" prefWidth="100.0" />
-        <Label layoutX="162.0" layoutY="164.0" prefHeight="21.0" prefWidth="62.0" text="Name" />
-        <Button fx:id="okButton" layoutX="239.0" layoutY="207.0" onAction="#addTeam" text="OK" />
+        <TextField fx:id="name" layoutX="284.0" layoutY="47.0" maxWidth="150.0" minWidth="150.0" prefHeight="31.0" prefWidth="100.0" />
+        <Label layoutX="179.0" layoutY="52.0" prefHeight="21.0" prefWidth="62.0" text="Name" />
+<!--        <Button fx:id="okButton" layoutX="239.0" layoutY="207.0" onAction="#addTeam" text="OK" />-->
+        <Button fx:id="okButton"  layoutX="300.0" layoutY="100.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#addTeam" prefHeight="31.0" prefWidth="101.0" text="Add">
+            <graphic>
+                <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@images/icons8-add-48.png" />
+                    </image>
+                </ImageView>
+            </graphic></Button>
     </children>
 </AnchorPane>

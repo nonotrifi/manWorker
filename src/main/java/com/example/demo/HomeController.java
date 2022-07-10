@@ -29,7 +29,9 @@ public class HomeController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        AtomicBoolean flag = new AtomicBoolean(false);
+        System.out.println(location);
+        System.out.println(resources);
+        AtomicBoolean flag = new AtomicBoolean(true);
 
         TranslateTransition slide = new TranslateTransition();
         slide.setDuration(Duration.seconds(0.5));
@@ -74,10 +76,10 @@ public class HomeController implements Initializable {
         Utils.loadContent("teams.fxml", homeContent);
     }
 
-    @FXML
+    /*@FXML
     public void goToConnectionDb(){
         Utils.loadContent("connectToDatabase.fxml", homeContent);
-    }
+    }*/
 
     @FXML
     public void goToSettings(){
@@ -85,6 +87,7 @@ public class HomeController implements Initializable {
     }
 
 
+    @FXML
     public void backToLogin(ActionEvent e) throws IOException {
         Utils.loadPage("logIn.fxml", e);
     }

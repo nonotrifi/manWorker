@@ -54,13 +54,16 @@ public class LoginController{
 
         ResultSet result = preparedStmt.executeQuery();
 
-        // CHecking if the output is empty
+        // CHecking if the result is empty
         if(!result.next()){
             return "Username is wrong";
         }
+
+        // ici on récupére le password qu'on a mis sur le fxml via l'id password
         String realPassword = result.getString("password");
 
         if (realPassword.compareTo(password) == 0) {
+            System.out.println(result.next());
             return Utils.CONFIRM_MESSAGE;
         }
         else

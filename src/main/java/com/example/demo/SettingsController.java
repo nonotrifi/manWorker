@@ -32,29 +32,15 @@ public class SettingsController{
     public void saveNewPassword() throws SQLException {
         String[] newPasswordField = {"new password", newPassword.getText()};
 
-        // ? means something you want to replace with prepared Statement;
-        String sql = "SELECT password FROM users WHERE name = ?;";
+        String checkUsernameAndOldPasswordMessage = checkUsernameAndOldPassword(name.getText(), oldPassword.getText());
 
-        PreparedStatement preparedStmt = databaseLink.prepareStatement(sql);
-        preparedStmt.setString(1, name.getText());
-
-        ResultSet result = preparedStmt.executeQuery();
-
-        if(!result.next()){
-            Utils.showAlert(Alert.AlertType.ERROR, owner, "Error",
-                    "The username you put is wrong.");
+        if(!Utils.isConfirm(checkUsernameAndOldPasswordMessage)){
+            showAlert(Alert.AlertType.ERROR, owner, "Error",
+                    checkUsernameAndOldPasswordMessage);
             return;
         }
 
-        String password = result.getString("password");
         String newPasswordMessage = Utils.checkField(newPasswordField);
-
-        if(oldPassword.getText().compareTo(password) != 0){
-            Utils.showAlert(Alert.AlertType.ERROR, owner, "Error",
-                    "The old password is wrong.");
-            oldPassword.requestFocus();
-            return;
-        }
 
         if(!Utils.isConfirm(newPasswordMessage)){
             showAlert(Alert.AlertType.ERROR, owner, "Error",
@@ -64,6 +50,30 @@ public class SettingsController{
         }
 
         changePassword(newPassword.getText(), name.getText());
+    }
+
+    public String checkUsernameAndOldPassword(String username, String oldPassword) throws SQLException {
+        String sql = "SELECT password FROM users WHERE name = ?;";
+
+        PreparedStatement preparedStmt = databaseLink.prepareStatement(sql);
+        preparedStmt.setString(1, name.getText());
+
+        ResultSet result = preparedStmt.executeQuery();
+
+        /* If the result is empty, it means that the user doesn't exist in the database */
+        if(!result.next()){
+            return "The username you put is wrong.";
+        }
+
+        /* Checking if the password that the user put and the password in the database are the same */
+        String databasePassword = result.getString("password");
+
+        if(oldPassword.compareTo(databasePassword) != 0){
+            return "The old password is wrong.";
+        }
+
+
+        return Utils.CONFIRM_MESSAGE;
     }
 
     public void changePassword(String newPassword, String username) throws SQLException {
