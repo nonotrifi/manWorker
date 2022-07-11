@@ -62,6 +62,7 @@ public class SettingsController{
 
         /* If the result is empty, it means that the user doesn't exist in the database */
         if(!result.next()){
+            System.out.println(result.next());
             return "The username you put is wrong.";
         }
 

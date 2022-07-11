@@ -22,7 +22,6 @@ import static com.example.demo.ManWorkerApplication.databaseLink;
 import static com.example.demo.Utils.showAlert;
 
 public class AddStepsController{
-
     private Planning planning;
     @FXML
     private Label planningName;
@@ -82,7 +81,7 @@ public class AddStepsController{
                 ));
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
