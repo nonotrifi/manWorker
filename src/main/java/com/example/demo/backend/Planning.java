@@ -21,7 +21,7 @@ public class Planning {
         this.endDate = endDate;
         this.budget = budget;
         this.team = team;
-        this.steps = new ArrayList<Step>();
+        this.steps = new ArrayList<>();
     }
 
     public void addStep(Step step){
@@ -92,60 +92,5 @@ public class Planning {
     public void setTeam(Team team) {
         this.team = team;
     }
-
-
-//    /*---------------------------------------- Getters and setters----------------------------------------- */
-//
-//    public void setName(String newTitle){
-//
-//        this.name = newTitle;
-//    }
-//
-//    public String getName(){
-//        return this.name;
-//    }
-//
-//    /* ------------------------------------- */
-//
-//    public Date getEndDate() {
-//        return endDate;
-//    }
-//
-//    /* ------------------------------------- */
-//
-//    public Date getStartDate() {
-//        return startDate;
-//    }
-//
-//    /* ------------------------------------- */
-//
-//    public double getBudget(){
-//        return this.budget;
-//    }
-//
-//    /* ------------------------------------- */
-//
-//    public String getDescription() {
-//        return description;
-//    }
-//
-//    public ArrayList<Step> getSteps() {return this.steps;}
-//
-//    /* ------------------------------------- */
-//
-//    public Team getTeam(){
-//        return this.team;
-//    }
-//
-//    /* ------------------------------------- */
-//
-//    public int getIdPlanning() {
-//        return idPlanning;
-//    }
-//
-//    public void setIdPlanning(int idPlanning){
-//        this.idPlanning = idPlanning;
-//    }
-
 
 }
