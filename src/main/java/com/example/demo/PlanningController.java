@@ -134,16 +134,21 @@ public class PlanningController implements Initializable {
          */
         table.setRowFactory( tv -> {
             // <> generics for example Array<String>, Planning is the object inside the tableRow
+            // Pour chaque ligne dans la table Planning
             TableRow<Planning> planningRow = new TableRow<>();
+
+            // Dans le cas ou le user clique sur l'une de ces lignes ->
             planningRow.setOnMouseClicked(event -> {
                 // we have to say !row otherwise we can click everywhre and it shows error
                 if (event.getClickCount() == 2 && (! planningRow.isEmpty()) ) {
                     FXMLLoader loader = Utils.loadContent("addSteps.fxml",contentPlanning);
                    // PlanningController needs to talk to addStepsController to let them know what planning was clicked
                     addStepsController = loader.getController();
+
                     try {
                         // Telling to addStepsController what planning was clicked
                         addStepsController.setUp(planningRow.getItem());
+
                     } catch (PlanningException e) {
                         e.printStackTrace();
                     }
@@ -157,15 +162,25 @@ public class PlanningController implements Initializable {
     @FXML
     public void addPlanning() throws SQLException {
         // We convert in Java Date because before converting it was in DatePicker (javaFX)
-        String[] planningNameField = {"name", name.getText(), "team"};
+
+        Date d1 = Utils.convertDate(startDate);
+        Date d2 = Utils.convertDate(endDate);
+
+        String[] planningNameField = {"name", name.getText()};
         String[] teamField = {"team", teamChoice.getValue()};
-        String[] startDateField = {"start date", startDate.toString()};
-        String[] endDateField = {"start date", startDate.toString()};
+        String[] startDateField = {"start date", startDate.getValue().toString()};
+//        System.out.println("startDate.getValue() = " + startDate.getValue().toString());
+//        System.out.println("d1 " + d1.toString());
+        String[] endDateField = {"start date", endDate.getValue().toString()};
+
+
 
         String messageName = Utils.checkField(planningNameField);
         String messageTeam = Utils.checkIfBlank(teamField);
         String messageDateStart = Utils.checkIfBlank(startDateField);
         String messageDateEnd = Utils.checkIfBlank(endDateField);
+
+
 
         if (!Utils.isConfirm(messageName)){
             showAlert(Alert.AlertType.ERROR, owner, "Error",
@@ -197,8 +212,8 @@ public class PlanningController implements Initializable {
             return;
         }
 
-        Date d1 = Utils.convertDate(startDate);
-        Date d2 = Utils.convertDate(endDate);
+
+
 
         // Check if date1 is date 1 before date 2, we already converted Datepicker to Date Java with this line Date d1 = convert(startDate)
         if(d1.after(d2)){

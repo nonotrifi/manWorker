@@ -31,6 +31,7 @@ public class Utils {
         if(field == null)
             return "An error occurred";
 
+
         String fieldName = field[0], fieldValue = field[1];
 
         if(fieldName == null)
@@ -99,6 +100,7 @@ public class Utils {
     }
     
     public static boolean isConfirm(String message){
+
         return message.compareTo(CONFIRM_MESSAGE) == 0;
     }
 
@@ -164,4 +166,7 @@ public class Utils {
         alert.show();
 
     }
+
+
+
 }
