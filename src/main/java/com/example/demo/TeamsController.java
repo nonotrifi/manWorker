@@ -8,6 +8,7 @@ import javafx.stage.Window;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static com.example.demo.ManWorkerApplication.databaseLink;
@@ -21,7 +22,7 @@ public class TeamsController{
    private TextField name;
 
     @FXML
-    public void addTeam(){
+    public void addTeam() throws SQLException {
         String[] teamNameField = {"team name", name.getText()};
         String teamNameMessage = Utils.checkField(teamNameField);
 
@@ -29,31 +30,42 @@ public class TeamsController{
             showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
                     teamNameMessage);
             name.requestFocus();
-            return;
         }
-
-        insertNewTeam(name.getText());
+        else if(teamNameAlreadyExists(name.getText())){
+            showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
+                    "Team name already exists");
+            name.requestFocus();
+        }
+        else
+            insertNewTeam(name.getText());
 
     }
 
-    public void insertNewTeam(String teamName){
-        try{
-            //ManWorkerApplication.teams.add(new Team(name.getText()));
-            String sql = "INSERT INTO teams(name, username) VALUES (?, ?);";
+    public boolean teamNameAlreadyExists(String teamName) throws SQLException {
+        String sql = "SELECT name FROM teams WHERE name = ?";
+        PreparedStatement preparedStmt = databaseLink.prepareStatement(sql);
+        preparedStmt.setString (1, teamName);
+        ResultSet result = preparedStmt.executeQuery();
 
-            PreparedStatement preparedStmt = databaseLink.prepareStatement(sql);
-            preparedStmt.setString (1, teamName);
-            preparedStmt.setString(2, ManWorkerApplication.currentUser);
-
-            preparedStmt.execute();
-
-            showAlert(Alert.AlertType.CONFIRMATION, owner, "Confirmation",
-                    "The team was added correctly.");
+        if(result.next()){
+            return true;
         }
-        catch(Exception ex){
-            showAlert(Alert.AlertType.ERROR, owner, "Error",
-                    "Team name already used.");
-        }
+        else
+            return false;
+    }
+
+    public void insertNewTeam(String teamName) throws SQLException{
+        //ManWorkerApplication.teams.add(new Team(name.getText()));
+        String sql = "INSERT INTO teams(name, username) VALUES (?, ?);";
+
+        PreparedStatement preparedStmt = databaseLink.prepareStatement(sql);
+        preparedStmt.setString (1, teamName);
+        preparedStmt.setString(2, ManWorkerApplication.currentUser);
+
+        preparedStmt.execute();
+
+        showAlert(Alert.AlertType.CONFIRMATION, owner, "Confirmation",
+                "The team was added correctly.");
     }
 
 }

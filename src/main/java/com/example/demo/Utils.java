@@ -28,7 +28,16 @@ public class Utils {
      * If we don't put static I have to create a utils object to use the method
      * */
     public static String checkIfBlank(String[] field){
+        if(field == null)
+            return "An error occurred";
+
         String fieldName = field[0], fieldValue = field[1];
+
+        if(fieldName == null)
+            return "An error occurred";
+
+        if(fieldValue == null)
+            return fieldName + " field cannot be blank";
 
         if (fieldValue.isBlank()) {
             return fieldName + " field cannot be blank";
@@ -38,7 +47,16 @@ public class Utils {
     }
 
     public static String checkLength(String[] field){
+        if(field == null)
+            return "An error occurred";
+
         String fieldName = field[0], fieldValue = field[1];
+
+        if(fieldName == null)
+            return "An error occurred";
+
+        if(fieldValue == null)
+            return fieldName + " field cannot be blank";
 
         if(fieldValue.length() < 2 || fieldValue.length() > 25){
             return fieldName + " cannot be less than 5 and greater than 25 characters.";
@@ -57,7 +75,7 @@ public class Utils {
 
         if(!isConfirm(blankMessage))
             return blankMessage;
-        
+
         if(!isConfirm(lengthMessage))
             return lengthMessage;
 
@@ -65,9 +83,10 @@ public class Utils {
     }
 
     // Checkfields it's used for many fields (javafx)
-    public static String checkFields(String[][] fields){
+    public static String checkMultipleFields(String[][] fields){
         String message;
 
+        // for-each java
         for(String[] field: fields){
             // grace a la method static dans utils
             message = checkField(field);
@@ -107,7 +126,8 @@ public class Utils {
 
     public static FXMLLoader loadContent(String fxmlName, AnchorPane anchorPane){
         /* Loading the fxml file */
-        FXMLLoader loader = new FXMLLoader(HomeController.class.getResource(fxmlName));
+        FXMLLoader loader = new FXMLLoader(ManWorkerApplication.class.getResource(fxmlName));
+
 
         /* Removing everything that's inside the anchor pane */
         for(Object c: anchorPane.getChildren().toArray()){
