@@ -14,6 +14,7 @@ import javafx.stage.Window;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
@@ -30,6 +31,7 @@ public class Utils {
     public static String checkIfBlank(String[] field){
         if(field == null)
             return "An error occurred";
+
 
         String fieldName = field[0], fieldValue = field[1];
 
@@ -99,6 +101,7 @@ public class Utils {
     }
     
     public static boolean isConfirm(String message){
+
         return message.compareTo(CONFIRM_MESSAGE) == 0;
     }
 
@@ -164,4 +167,7 @@ public class Utils {
         alert.show();
 
     }
+
+
+
 }

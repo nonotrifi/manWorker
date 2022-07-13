@@ -69,7 +69,7 @@ public class ManWorkerTest {
 
     @Test
     public void testIsValidated() throws SQLException {
-        String loginMessage = loginController.isValidated("mairam", "12345");
+        String loginMessage = loginController.isValidated("mairam", "123456");
         assertEquals(0, loginMessage.compareTo("Confirm"));
 
         loginMessage = loginController.isValidated("mairam", "1234566");
