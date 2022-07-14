@@ -63,7 +63,7 @@ public class LoginController{
         String realPassword = result.getString("password");
 
         if (realPassword.compareTo(password) == 0) {
-            System.out.println(result.next());
+            //System.out.println(result.next());
             return Utils.CONFIRM_MESSAGE;
         }
         else
