@@ -162,7 +162,10 @@ public class PlanningController implements Initializable {
     @FXML
     public void addPlanning() throws SQLException {
         // We convert in Java Date because before converting it was in DatePicker (javaFX)
-
+        if(startDate.getValue() == null || endDate.getValue() == null){
+            showAlert(Alert.AlertType.ERROR, owner, "Error","Select a start and an end date.");
+            return;
+        }
         Date d1 = Utils.convertDate(startDate);
         Date d2 = Utils.convertDate(endDate);
 
@@ -171,7 +174,7 @@ public class PlanningController implements Initializable {
         String[] startDateField = {"start date", startDate.getValue().toString()};
 //        System.out.println("startDate.getValue() = " + startDate.getValue().toString());
 //        System.out.println("d1 " + d1.toString());
-        String[] endDateField = {"start date", endDate.getValue().toString()};
+        String[] endDateField = {"end date", endDate.getValue().toString()};
 
 
 
