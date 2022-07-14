@@ -178,7 +178,7 @@ public class PlanningController implements Initializable {
         String[] planningNameField = {"name", name.getText()};
         String[] teamField = {"team", teamChoice.getValue()};
         String[] startDateField = {"start date", d1.toString()};
-        String[] endDateField = {"start date", d2.toString()};
+        String[] endDateField = {"end date", d2.toString()};
 
 
         String messageName = Utils.checkField(planningNameField);
