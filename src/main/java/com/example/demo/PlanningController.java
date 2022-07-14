@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.ResourceBundle;
 
 //import static com.example.demo.ManWorkerApplication.teams;
+import static com.example.demo.ManWorkerApplication.currentUser;
 import static com.example.demo.ManWorkerApplication.databaseLink;
 import static com.example.demo.Utils.showAlert;
 
@@ -125,12 +126,13 @@ public class PlanningController implements Initializable {
                 table.getItems().add(currentPlanning);
             }
         } catch (SQLException e) {
+            // red error sql
             e.printStackTrace();
         }
 
         /*
             This part is when we click the row we load a content. <>
-            tv is a parameter of a lambda function -
+            tv is a parameter of a lambda function - setRowFactory means an event handler to teach
          */
         table.setRowFactory( tv -> {
             // <> generics for example Array<String>, Planning is the object inside the tableRow
@@ -142,11 +144,12 @@ public class PlanningController implements Initializable {
                 // we have to say !row otherwise we can click everywhre and it shows error
                 if (event.getClickCount() == 2 && (! planningRow.isEmpty()) ) {
                     FXMLLoader loader = Utils.loadContent("addSteps.fxml",contentPlanning);
+
                    // PlanningController needs to talk to addStepsController to let them know what planning was clicked
                     addStepsController = loader.getController();
 
                     try {
-                        // Telling to addStepsController what planning was clicked
+                        // Telling to addStepsController what planning was clicked, we are calling the setup from addstep
                         addStepsController.setUp(planningRow.getItem());
 
                     } catch (PlanningException e) {
@@ -163,16 +166,19 @@ public class PlanningController implements Initializable {
     public void addPlanning() throws SQLException {
         // We convert in Java Date because before converting it was in DatePicker (javaFX)
 
+        if(startDate.getValue() == null || endDate.getValue() == null){
+            showAlert(Alert.AlertType.ERROR, owner, "Error",
+                    "Select a start and an end date.");
+            return;
+        }
+
         Date d1 = Utils.convertDate(startDate);
         Date d2 = Utils.convertDate(endDate);
 
         String[] planningNameField = {"name", name.getText()};
         String[] teamField = {"team", teamChoice.getValue()};
-        String[] startDateField = {"start date", startDate.getValue().toString()};
-//        System.out.println("startDate.getValue() = " + startDate.getValue().toString());
-//        System.out.println("d1 " + d1.toString());
-        String[] endDateField = {"start date", endDate.getValue().toString()};
-
+        String[] startDateField = {"start date", d1.toString()};
+        String[] endDateField = {"start date", d2.toString()};
 
 
         String messageName = Utils.checkField(planningNameField);
@@ -189,6 +195,10 @@ public class PlanningController implements Initializable {
         }
 
         if (!Utils.isConfirm(messageDateStart)){
+            if(startDate == null){
+                showAlert(Alert.AlertType.ERROR,owner, "Error",
+                        "startDate empty");
+            }
             showAlert(Alert.AlertType.ERROR, owner, "Error",
                     messageDateStart);
             return;
@@ -223,7 +233,7 @@ public class PlanningController implements Initializable {
         }
 
         insertNewPlanning(name.getText(), description.getText(), Float.parseFloat(budget.getText()),
-                new java.sql.Date(Utils.convertDate(startDate).getTime()), new java.sql.Date(Utils.convertDate(endDate).getTime()),
+                new java.sql.Date(d1.getTime()), new java.sql.Date(d2.getTime()),
                 teamChoice.getValue(), ManWorkerApplication.currentUser);
 
     }
@@ -252,7 +262,6 @@ public class PlanningController implements Initializable {
         int idPlanning = 0;
 
         if (rs.next()) {
-            // ???
             idPlanning = rs.getInt(1);
         }
 
@@ -260,10 +269,12 @@ public class PlanningController implements Initializable {
                 name, description, new Team(teamName), budget);
 
         table.getItems().add(newPlanning);
+
     }
 
     @FXML
     private void deletePlanning() throws SQLException {
+        // Deleting from the table
         Planning planning = (Planning)table.getSelectionModel().getSelectedItem();
         // Otherwise it tries to delete a non existing planning
         if(planning == null)
@@ -271,6 +282,7 @@ public class PlanningController implements Initializable {
 
         table.getItems().remove(planning);
 
+        // Deleting
         String sql = "DELETE FROM plannings WHERE idPlanning = ?";
 
         PreparedStatement pstmt = databaseLink.prepareStatement(sql);

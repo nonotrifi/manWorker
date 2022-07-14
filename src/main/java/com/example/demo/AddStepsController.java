@@ -74,6 +74,7 @@ public class AddStepsController{
 
             /* result has the rows that are in the database, each row is used to create new planning objects
             and put them into the tableView in the interface
+            the idStep is hidden but it's
              */
 
             while(result.next()){
@@ -102,12 +103,12 @@ public class AddStepsController{
     }
 
     public void insertNewStep() throws SQLException {
-        String query = "insert into steps(name, description, idPlanning)"
+        String sql = "insert into steps(name, description, idPlanning)"
                 + " values (?, ?, ?)";
 
 
         // create the mysql insert preparedstatement
-        PreparedStatement preparedStmt = databaseLink.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement preparedStmt = databaseLink.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         preparedStmt.setString (1, name.getText());
         preparedStmt.setString   (2, description.getText());
         preparedStmt.setInt(3, planning.getIdPlanning());

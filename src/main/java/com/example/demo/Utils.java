@@ -1,5 +1,6 @@
 package com.example.demo;
-
+import java.time.*;
+import java.util.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -127,19 +128,21 @@ public class Utils {
     }
 
     public static FXMLLoader loadContent(String fxmlName, AnchorPane anchorPane){
-        /* Loading the fxml file */
-        FXMLLoader loader = new FXMLLoader(ManWorkerApplication.class.getResource(fxmlName));
+        /* Loading the fxml file FXMLLoader is just a JavaFx class that we use to load a new fxml file, getResource taking fxml */
+        FXMLLoader loader = new FXMLLoader(Utils.class.getResource(fxmlName));
 
 
-        /* Removing everything that's inside the anchor pane */
+        /* Removing everything that's inside the anchor pane, getChildren() getting everything from anchorPane and toArray()
+        * Converting the type to an Array(); Object c because I don't know the type */
         for(Object c: anchorPane.getChildren().toArray()){
             anchorPane.getChildren().remove(c);
         }
 
-        /* Adding the fxml to the anchor pane */
+        /* Adding the fxml to the anchor pane, load() get the content inside the fxml */
         try {
             anchorPane.getChildren().add(loader.load());
         } catch (IOException ioe) {
+            // maye error inside the fxml
             ioe.printStackTrace();
         }
 
