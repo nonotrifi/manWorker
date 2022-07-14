@@ -29,8 +29,8 @@ public class HomeController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //System.out.println(location);
-        //System.out.println(resources);
+        System.out.println(location);
+        System.out.println(resources);
         AtomicBoolean flag = new AtomicBoolean(true);
 
         TranslateTransition slide = new TranslateTransition();

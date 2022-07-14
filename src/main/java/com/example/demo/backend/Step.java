@@ -14,32 +14,30 @@ public class Step {
 
     }
 
-    public int getIdStep() {
-        return idStep;
-    }
 
-    public void setIdStep(int idStep) {
-        this.idStep = idStep;
+    /*---------------------------------------- Getters and setters----------------------------------------- */
+    public void setName(String newName){
+        this.name = newName;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setId(int idStep){
+        this.idStep = idStep;
     }
 
-    public String getDescription() {
-        return description;
+    public int getIdStep(){
+        return idStep;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public String getDescription(){
+        return this.description;
     }
+
    @Override
     public String toString(){
         return "Name: " + this.name + "\n" + "Description: " + this.description;
     }
-
 }

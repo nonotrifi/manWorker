@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import org.controlsfx.control.*?>
+<?import com.jfoenix.controls.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="contentPlanning" prefHeight="436.0" prefWidth="800.0" style="-fx-background-color: #bbdefb;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.SettingsController">
+   <children>
+      <VBox layoutX="102.0" layoutY="46.0" prefHeight="241.0" prefWidth="89.0" spacing="21.0">
+         <children>
+            <Label text="user">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label text="old password">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label text="new password">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label>
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
+      <Button fx:id="okButton" layoutX="239.0" layoutY="187.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#saveNewPassword" prefHeight="31.0" prefWidth="101.0" text="Validate">
+         <graphic>
+            <ImageView fitHeight="20.0" fitWidth="20.0">
+               <image>
+                  <Image url="@images/ok.png" />
+               </image>
+            </ImageView>
+         </graphic></Button>
+      <TextField layoutX="212.0" layoutY="46.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </TextField>
+      <PasswordField fx:id="oldPassword" layoutX="212.0" layoutY="85.0" prefHeight="30.0" prefWidth="175.0" />
+      <PasswordField fx:id="newPassword" layoutX="212.0" layoutY="124.0" prefHeight="30.0" prefWidth="175.0" />
+   </children>
+</AnchorPane>
