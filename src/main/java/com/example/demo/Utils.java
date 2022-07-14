@@ -28,6 +28,7 @@ public class Utils {
      *
      * If we don't put static I have to create a utils object to use the method
      * */
+    //Controles sur champ et retourne un msg d'erreur ou bien "confirm"
     public static String checkIfBlank(String[] field){
         if(field == null)
             return "An error occurred";
@@ -48,6 +49,7 @@ public class Utils {
         return CONFIRM_MESSAGE;
     }
 
+    //Check la taille d'un champ pour limiter a 2chars minimum et max 25
     public static String checkLength(String[] field){
         if(field == null)
             return "An error occurred";
@@ -71,7 +73,7 @@ public class Utils {
     public static String checkField(String[] field){
         String blankMessage, lengthMessage;
 
-        // grace a la method static dans utils
+        // Grace a la method static dans utils
         blankMessage = Utils.checkIfBlank(field);
         lengthMessage = Utils.checkLength(field);
 
@@ -84,13 +86,12 @@ public class Utils {
         return CONFIRM_MESSAGE;
     }
 
-    // Checkfields it's used for many fields (javafx)
+    // Checkfields is used for many fields (javafx)
     public static String checkMultipleFields(String[][] fields){
         String message;
-
-        // for-each java
+        //Check si pour tout les champs, la taille est correcte et ils ne sont pas vides
+        //Retournera un msg different de "confirm" sinon
         for(String[] field: fields){
-            // grace a la method static dans utils
             message = checkField(field);
 
             if(!isConfirm(message))
@@ -107,11 +108,11 @@ public class Utils {
 
     public static boolean isNumeric(String string) {
 
-        if(string == null || string.equals("")) {
+        if(string == null || string.equals("")) { // Si vide
             return false;
         }
 
-        // Avant de parse c'est un string l'objectf avec parseInt est de le transformer en Integer
+        // Avant de parse c'est un string, parseInt transforme en Integer
         try {
             Float.parseFloat(string);
             return true;
