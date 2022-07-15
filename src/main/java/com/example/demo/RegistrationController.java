@@ -127,7 +127,7 @@ public class RegistrationController{
         PreparedStatement preparedStmt = databaseLink.prepareStatement(sql);
         preparedStmt.setString(1, username);
 
-        // executeQeury is the bottom that we press in workbrench to execute
+        // executeQuery is the bottom that we press in workbrench to execute
         ResultSet result = preparedStmt.executeQuery();
 
         /* If we find another user with the same username from the database,
