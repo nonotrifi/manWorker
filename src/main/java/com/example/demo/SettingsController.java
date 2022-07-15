@@ -30,7 +30,7 @@ public class SettingsController{
     Window owner;
     @FXML
     public void saveNewPassword() throws SQLException {
-        String[] newPasswordField = {"new password", newPassword.getText()};
+        String[] newPasswordField = {"New password", newPassword.getText()};
 
         String checkUsernameAndOldPasswordMessage = checkUsernameAndOldPassword(name.getText(), oldPassword.getText());
 
