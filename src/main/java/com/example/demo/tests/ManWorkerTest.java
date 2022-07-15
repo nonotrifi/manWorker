@@ -5,7 +5,9 @@ import com.example.demo.backend.Planning;
 import com.example.demo.backend.Team;
 import com.example.demo.backend.User;
 import com.example.demo.exceptions.PlanningException;
+import javafx.scene.PointLight;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.sql.SQLException;
@@ -79,9 +81,9 @@ public class ManWorkerTest {
         assertEquals(0, loginMessage.compareTo("Username is wrong"));
     }
 
-    @Test
-    public void testAddStepsSetUpException(){
-        assertThrows(PlanningException.class, () -> addStepsController.setUp(null));
+    @Test(expected = PlanningException.class)   public void testAddStepsSetUpException() throws PlanningException {
+        addStepsController.setUp(null);
+
     }
 
 
