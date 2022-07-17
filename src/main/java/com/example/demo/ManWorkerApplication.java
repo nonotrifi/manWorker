@@ -70,7 +70,6 @@ public class ManWorkerApplication extends Application {
         BufferedReader br = new BufferedReader(new FileReader(file));
         String logoLink = br.readLine();
         stage.getIcons().add(new Image(logoLink));
-
         stage.show();
     }
 

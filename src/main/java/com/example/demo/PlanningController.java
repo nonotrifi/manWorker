@@ -324,6 +324,11 @@ public class PlanningController implements Initializable {
             /* result has the rows that are in the database, each row is used to create new planning objects
             and put them into the tableView in the interface
              */
+        if(result == null){
+            showAlert(Alert.AlertType.ERROR, owner, "Error",
+                    "Impossible to export an empty table");
+            return ;
+        }
         try {
         while(result.next()) {
             //Ajouter controle, export pdf impossible car planning vide

@@ -21,8 +21,12 @@ import java.util.*;
 import java.util.jar.JarFile;
 
 public class PlugConnector {
+    public static ArrayList<URLClassLoader> classLoader = new ArrayList<>();
+    public static boolean isLaunched = false ;
     static HashSet<PluginModel> plugins = new HashSet<>();
+
     public static void start() throws Exception {
+        String  logs = "Starting plugConnector : ";
         String myPluginPath = "C:/Users/Moustapha Diarra/Documents/Ecole/3AL1/Projet ANNUEL/ClientLourdJVFX/manWorker/src/main/java/com/example/demo/plugins" ;
         File pluginDirectory = new File(myPluginPath);
         if (!pluginDirectory.exists()) pluginDirectory.mkdir();
@@ -44,6 +48,7 @@ public class PlugConnector {
             }
             URLClassLoader urlClassLoader = new URLClassLoader(urls.toArray(new URL[urls.size()]));
             classes.remove(4);
+            classLoader.add(urlClassLoader) ;
             //classes.remove(4);
             //System.out.println("Ensemble des classes"+classes+"\n\n");
 
@@ -72,6 +77,31 @@ public class PlugConnector {
                 }
                 loadedPluginModels.getChildren().add(new Label(plugin.name()));
             });
+            isLaunched = true ;
+        }
+        if(isLaunched){
+            logs = logs + "success";
+            Logs.writeLogs(logs);
+        }else{
+            logs = logs + "failed due to unloaded plugin" ;
+            Logs.writeLogs(logs);
+        }
+    }
+    public static void close() {
+        String logs = "Closing pluginConnector : ";
+        try{
+            if(isLaunched){
+                for(URLClassLoader url : classLoader){
+                    url.close() ;
+                }
+                isLaunched = false ;
+            }
+            logs = logs + "success";
+            Logs.writeLogs(logs);
+        }catch (Exception e){
+                e.printStackTrace();
+            logs = logs + "failed " + e;
+            Logs.writeLogs(logs);
         }
     }
 

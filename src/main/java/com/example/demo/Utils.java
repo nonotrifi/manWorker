@@ -28,6 +28,7 @@ import java.util.Date;
 public class Utils {
     public static final int FRAME_HEIGHT = 800, FRAME_WIDTH = 1000;
     public static final String CONFIRM_MESSAGE = "Confirm";
+    public static boolean connectPlug = false ;
 
     /* This function gets a value for a field ( for example " Alice " for " name " ) and if the value is blank ( for example
      * field = "" it would return a message saying the text field name ( which is " name " in the example ) and returns
