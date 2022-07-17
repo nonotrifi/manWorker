@@ -55,7 +55,6 @@ public class TeamsController{
     }
 
     public void insertNewTeam(String teamName) throws SQLException{
-        //ManWorkerApplication.teams.add(new Team(name.getText()));
         String sql = "INSERT INTO teams(name, username) VALUES (?, ?);";
 
         PreparedStatement preparedStmt = databaseLink.prepareStatement(sql);

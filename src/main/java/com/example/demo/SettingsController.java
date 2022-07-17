@@ -60,15 +60,20 @@ public class SettingsController{
     }
 
     public String checkUsernameAndOldPassword(String username, String oldPassword) throws SQLException {
+
         String sql = "SELECT password FROM users WHERE name = ?;";
         PreparedStatement preparedStmt = databaseLink.prepareStatement(sql);
         preparedStmt.setString(1, name.getText());
+
         ResultSet result = preparedStmt.executeQuery();
+
         if(!result.next()){
             System.out.println(result.next());
             return "The username you put is wrong.";
         }
+
         String databasePassword = result.getString("password");
+
         if(oldPassword.compareTo(databasePassword) != 0){
             return "The old password is wrong.";
         }

@@ -25,24 +25,18 @@ public class AddStepsController{
     private Planning planning;
     @FXML
     private Label planningName;
-
     @FXML
     private TableColumn<Step, String> nameCol;
     @FXML
     private TableColumn<Step, String> descriptionCol;
-
     @FXML
     private TextField name;
-
     @FXML
     private TextArea description;
-
     @FXML
     private TableView table;
-
     Window owner;
 
-    //adding step to the planning
     public void setUp(Planning planning) throws PlanningException {
         if(planning == null)
             throw new PlanningException();

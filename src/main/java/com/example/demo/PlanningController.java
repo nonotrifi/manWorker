@@ -33,11 +33,9 @@ import static com.example.demo.Utils.showAlert;
 
 public class PlanningController implements Initializable {
 
-    // To not change the whole page and keep the menu
     @FXML
     private AnchorPane contentPlanning;
 
-    /* Elements for creating a new planning */
     @FXML
     private TextField name;
 
@@ -56,7 +54,6 @@ public class PlanningController implements Initializable {
     @FXML
     private PrefixSelectionChoiceBox<String> teamChoice;
 
-    /* Table with the user's plannings */
     @FXML
     private TableView table;
 
@@ -73,16 +70,14 @@ public class PlanningController implements Initializable {
     @FXML
     private TableColumn<Planning, String> teamCol;
 
-    // When we go to an add steps page we need to say to this page what planning was clicked
+
     private AddStepsController addStepsController;
     Window owner;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        // Etape 1: Connecter les champs du tableau FXML aux attributs de la classe Planning
 
-        // saying to java that the attribute name from the object planning will take place of the column name
         nameCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("name"));
         descriptionCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("description"));
         budgetCol.setCellValueFactory(new PropertyValueFactory<Planning, Float>("budget"));
@@ -91,11 +86,11 @@ public class PlanningController implements Initializable {
         teamCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("team"));
 
 
-        // Etape 2 : Récupérer les teamps présentes dans la base de données et les mettre dans le teamchoice côté front
+
         try {
-            /* Setting up the teamChoice with the teams we have in the database */
+
             if(teamChoice != null){
-                // We just want the teams that were cretaed by the user that is logged in
+
                 String sql = "SELECT name FROM teams WHERE username = ?";
 
                 PreparedStatement preparedStmt = databaseLink.prepareStatement(sql);
@@ -110,22 +105,16 @@ public class PlanningController implements Initializable {
             }
 
 
-            // Etape 3 : Ajout des planning déjà présents dans la base de donnée côté FXML
 
-            /* Adding the plannings created by the user that is logged in to the table */
             String sql = "SELECT * FROM plannings where username = ?";
             PreparedStatement preparedStmt = databaseLink.prepareStatement(sql);
             preparedStmt.setString (1, ManWorkerApplication.currentUser);
             ResultSet result = preparedStmt.executeQuery();
             Planning currentPlanning = null;
 
-            /* result has the rows that are in the database, each row is used to create new planning objects
-            and put them into the tableView in the interface
-             */
+
             while(result.next()){
-                /* For each result that we get from the database ( result is the object where we have all the rows we
-                   create a new planning object, and we put it to the table
-                */
+
                 currentPlanning = new Planning(result.getInt("idPlanning"), result.getTimestamp("startDate"),
                         result.getTimestamp("endDate"), result.getString("name"),
                         result.getString("description"), new Team(result.getString("teamName")), result.getDouble("budget"));
@@ -133,33 +122,27 @@ public class PlanningController implements Initializable {
                 table.getItems().add(currentPlanning);
             }
         } catch (SQLException e) {
-            // red error sql, printing the error
+
             e.printStackTrace();
         }
 
 
-        // Etape 4 : Dire à Java qu'au moment ou on double clique sur l'un des planning on ouvrira le content steps
 
-        /*
-            This part is when we click the row we load a content. <>
-            tv is a parameter of a lambda function - setRowFactory means an event handler to teach
-         */
         table.setRowFactory( tv -> {
-            // <> generics for example Array<String>, Planning is the object inside the tableRow
-            // Pour chaque ligne dans la table Planning
+
             TableRow<Planning> planningRow = new TableRow<>();
 
-            // Dans le cas ou le user clique sur l'une de ces lignes ->
+
             planningRow.setOnMouseClicked(event -> {
-                // we have to say !row otherwise we can click everywhre and it shows error
+
                 if (event.getClickCount() == 2 && (! planningRow.isEmpty()) ) {
                     FXMLLoader loader = Utils.loadContent("addSteps.fxml",contentPlanning);
 
-                   // PlanningController needs to talk to addStepsController to let them know what planning was clicked
+
                     addStepsController = loader.getController();
 
                     try {
-                        // Telling to addStepsController what planning was clicked, we are calling the setup from addstep
+
                         addStepsController.setUp(planningRow.getItem());
 
                     } catch (PlanningException e) {
@@ -174,7 +157,6 @@ public class PlanningController implements Initializable {
 
     @FXML
     public void addPlanning() throws SQLException {
-        // We convert in Java Date because before converting it was in DatePicker (javaFX)
 
         if(startDate.getValue() == null || endDate.getValue() == null){
             showAlert(Alert.AlertType.ERROR, owner, "Error",
@@ -235,7 +217,7 @@ public class PlanningController implements Initializable {
 
 
 
-        // Check if date1 is date 1 before date 2, we already converted Datepicker to Date Java with this line Date d1 = convert(startDate)
+
         if(d1.after(d2)){
             showAlert(Alert.AlertType.ERROR,owner, "Error",
                     "Start Date should be before End Date");
@@ -264,12 +246,10 @@ public class PlanningController implements Initializable {
         preparedStmt.setString    (6, teamName);
         preparedStmt.setString(7, username);
 
-        // execute is when you press the bottom to execute a query
+
         preparedStmt.executeUpdate();
 
-        // Car a chaque fois qu'on exécute la requête, Mysql autogénére une clé, la valeur de cette clé on la récupère avec rs.getInt()
-        // Et on donne à idPlanning
-        // GenerateKeys we use because is autoincremented from sql and we cannot know this without getGeneratedKey()
+
         ResultSet rs = preparedStmt.getGeneratedKeys();
 
         int idPlanning = 0;
@@ -278,8 +258,7 @@ public class PlanningController implements Initializable {
             idPlanning = rs.getInt(1);
         }
 
-        // Creating new object (class Planning) and adding the object to fxml table
-        // We have to create a new object to add to the table, those attributes take the values from fxml line 245
+
         Planning newPlanning = new Planning(idPlanning, startDate, endDate,
                 name, description, new Team(teamName), budget);
 
@@ -290,26 +269,20 @@ public class PlanningController implements Initializable {
 
     @FXML
     private void deletePlanning() throws SQLException {
-        // Deleting from the table
         Planning planning = (Planning)table.getSelectionModel().getSelectedItem();
-        // Otherwise it tries to delete a non existing planning
         if(planning == null)
             return;
 
         table.getItems().remove(planning);
 
-        // Deleting
         String sql = "DELETE FROM plannings WHERE idPlanning = ?";
 
         PreparedStatement pstmt = databaseLink.prepareStatement(sql);
-
-        // set the corresponding param
         pstmt.setInt(1, planning.getIdPlanning());
-        // execute the delete statement
         pstmt.executeUpdate();
 
 
-        //ManWorkerApplication.plannings.remove(planning);
+
     }
 
 
