@@ -83,6 +83,7 @@ public class RegistrationController{
         if (!areSamePasswords(password, password2)) {
             showAlert(Alert.AlertType.ERROR, owner, "Error",
                     "Passwords are not the same");
+            return false;
         }
 
         return true;

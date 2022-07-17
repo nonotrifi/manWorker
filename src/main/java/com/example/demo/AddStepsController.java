@@ -68,7 +68,7 @@ public class AddStepsController{
 
             /* result has the rows that are in the database, each row is used to create new planning objects
             and put them into the tableView in the interface
-            the idStep is hidden but it's
+            the idStep is hidden but it's used in the back
              */
 
             while(result.next()){

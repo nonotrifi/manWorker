@@ -32,10 +32,10 @@ import static com.example.demo.ManWorkerApplication.databaseLink;
 import static com.example.demo.Utils.showAlert;
 
 public class PlanningController implements Initializable {
-
     @FXML
     private AnchorPane contentPlanning;
 
+    /* Elements for creating a new planning */
     @FXML
     private TextField name;
 
@@ -53,7 +53,6 @@ public class PlanningController implements Initializable {
 
     @FXML
     private PrefixSelectionChoiceBox<String> teamChoice;
-
     @FXML
     private TableView table;
 
@@ -70,14 +69,16 @@ public class PlanningController implements Initializable {
     @FXML
     private TableColumn<Planning, String> teamCol;
 
-
+    // When we go to an add steps page we need to say to this page what planning was clicked
     private AddStepsController addStepsController;
     Window owner;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        // Etape 1: Connecter les champs du tableau FXML aux attributs de la classe Planning
 
+        // saying to java that the attribute name from the object planning will take place of the column name
         nameCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("name"));
         descriptionCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("description"));
         budgetCol.setCellValueFactory(new PropertyValueFactory<Planning, Float>("budget"));
@@ -86,11 +87,9 @@ public class PlanningController implements Initializable {
         teamCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("team"));
 
 
-
+        // Etape 2 : Récupérer les teamps présentes dans la base de données et les mettre dans le teamchoice côté front
         try {
-
             if(teamChoice != null){
-
                 String sql = "SELECT name FROM teams WHERE username = ?";
 
                 PreparedStatement preparedStmt = databaseLink.prepareStatement(sql);
@@ -105,16 +104,22 @@ public class PlanningController implements Initializable {
             }
 
 
+            // Etape 3 : Ajout des planning déjà présents dans la base de donnée côté FXML
 
+            /* Adding the plannings created by the user that is logged in to the table */
             String sql = "SELECT * FROM plannings where username = ?";
             PreparedStatement preparedStmt = databaseLink.prepareStatement(sql);
             preparedStmt.setString (1, ManWorkerApplication.currentUser);
             ResultSet result = preparedStmt.executeQuery();
             Planning currentPlanning = null;
 
-
+            /* result has the rows that are in the database, each row is used to create new planning objects
+            and put them into the tableView in the interface
+             */
             while(result.next()){
-
+                /* For each result that we get from the database ( result is the object where we have all the rows we
+                   create a new planning object, and we put it to the table
+                */
                 currentPlanning = new Planning(result.getInt("idPlanning"), result.getTimestamp("startDate"),
                         result.getTimestamp("endDate"), result.getString("name"),
                         result.getString("description"), new Team(result.getString("teamName")), result.getDouble("budget"));
@@ -127,22 +132,21 @@ public class PlanningController implements Initializable {
         }
 
 
+        // Etape 4 : Dire à Java qu'au moment ou on double clique sur l'un des planning on ouvrira le content steps
 
         table.setRowFactory( tv -> {
-
             TableRow<Planning> planningRow = new TableRow<>();
-
 
             planningRow.setOnMouseClicked(event -> {
 
                 if (event.getClickCount() == 2 && (! planningRow.isEmpty()) ) {
                     FXMLLoader loader = Utils.loadContent("addSteps.fxml",contentPlanning);
 
-
+                   // PlanningController needs to talk to addStepsController to let them know what planning was clicked
                     addStepsController = loader.getController();
 
                     try {
-
+                        // Telling to addStepsController what planning was clicked, we are calling the setup from addstep
                         addStepsController.setUp(planningRow.getItem());
 
                     } catch (PlanningException e) {
@@ -215,9 +219,6 @@ public class PlanningController implements Initializable {
         }
 
 
-
-
-
         if(d1.after(d2)){
             showAlert(Alert.AlertType.ERROR,owner, "Error",
                     "Start Date should be before End Date");
@@ -258,7 +259,6 @@ public class PlanningController implements Initializable {
             idPlanning = rs.getInt(1);
         }
 
-
         Planning newPlanning = new Planning(idPlanning, startDate, endDate,
                 name, description, new Team(teamName), budget);
 
@@ -269,7 +269,9 @@ public class PlanningController implements Initializable {
 
     @FXML
     private void deletePlanning() throws SQLException {
+        // Deleting from the table
         Planning planning = (Planning)table.getSelectionModel().getSelectedItem();
+        // Otherwise it tries to delete a non existing planning
         if(planning == null)
             return;
 
@@ -278,9 +280,11 @@ public class PlanningController implements Initializable {
         String sql = "DELETE FROM plannings WHERE idPlanning = ?";
 
         PreparedStatement pstmt = databaseLink.prepareStatement(sql);
-        pstmt.setInt(1, planning.getIdPlanning());
-        pstmt.executeUpdate();
 
+
+        pstmt.setInt(1, planning.getIdPlanning());
+
+        pstmt.executeUpdate();
 
 
     }
