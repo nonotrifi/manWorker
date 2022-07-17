@@ -79,7 +79,7 @@ public class PlanningController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        String logs = "Planning initialize: ";
         // saying to java that the attribute name from the object planning will take place of the column name
         nameCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("name"));
         descriptionCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("description"));
@@ -125,9 +125,13 @@ public class PlanningController implements Initializable {
 
                 table.getItems().add(currentPlanning);
             }
+            logs = logs + "success";
+            Logs.writeLogs(logs);
         } catch (SQLException e) {
             // red error sql
             e.printStackTrace();
+            logs = logs + "failed " + e;
+            Logs.writeLogs(logs);
         }
 
         /*
@@ -165,7 +169,7 @@ public class PlanningController implements Initializable {
     @FXML
     public void addPlanning() throws SQLException {
         // We convert in Java Date because before converting it was in DatePicker (javaFX)
-
+        String logs = "addPlanning : ";
         if(startDate.getValue() == null || endDate.getValue() == null){
             showAlert(Alert.AlertType.ERROR, owner, "Error",
                     "Select a start and an end date.");
@@ -232,14 +236,23 @@ public class PlanningController implements Initializable {
             return;
         }
 
-        insertNewPlanning(name.getText(), description.getText(), Float.parseFloat(budget.getText()),
-                new java.sql.Date(d1.getTime()), new java.sql.Date(d2.getTime()),
-                teamChoice.getValue(), ManWorkerApplication.currentUser);
+        try{
+            insertNewPlanning(name.getText(), description.getText(), Float.parseFloat(budget.getText()),
+                    new java.sql.Date(d1.getTime()), new java.sql.Date(d2.getTime()),
+                    teamChoice.getValue(), ManWorkerApplication.currentUser);
+            logs = logs + "success";
+            Logs.writeLogs(logs);
+        }catch (Exception e){
+            e.printStackTrace();
+            logs = logs + "failed " + e;
+            Logs.writeLogs(logs);
+        }
 
     }
 
 
     public void insertNewPlanning(String name, String description, float budget, java.sql.Date startDate, java.sql.Date endDate, String teamName, String username) throws SQLException {
+        String logs = "Insert newPlanning : ";
         String sql = " insert into plannings(name, description, budget, startDate, endDate, teamName, username)"
                 + " values (?, ?, ?, ?, ?, ?, ?)";
 
@@ -267,8 +280,15 @@ public class PlanningController implements Initializable {
 
         Planning newPlanning = new Planning(idPlanning, startDate, endDate,
                 name, description, new Team(teamName), budget);
-
+    try {
         table.getItems().add(newPlanning);
+        logs = logs + "success";
+        Logs.writeLogs(logs);
+    }catch (Exception e){
+        e.printStackTrace();
+        logs = logs + "failed " + e;
+        Logs.writeLogs(logs);
+    }
 
     }
 
@@ -291,10 +311,47 @@ public class PlanningController implements Initializable {
         pstmt.setInt(1, planning.getIdPlanning());
         // execute the delete statement
         pstmt.executeUpdate();
-
-
-        //ManWorkerApplication.plannings.remove(planning);
     }
+    @FXML
+    private void createPDF() throws SQLException{
+        String logs = "Creating Pdf : ";
+        String sql = "SELECT * FROM plannings where username = ?";
+        PreparedStatement preparedStmt = databaseLink.prepareStatement(sql);
+        preparedStmt.setString (1, ManWorkerApplication.currentUser);
+        ResultSet result = preparedStmt.executeQuery();
+        ArrayList<Planning> currentPlanning = new ArrayList<Planning>();
+
+            /* result has the rows that are in the database, each row is used to create new planning objects
+            and put them into the tableView in the interface
+             */
+        try {
+        while(result.next()) {
+            //Ajouter controle, export pdf impossible car planning vide
+            assert currentPlanning != null;
+            currentPlanning.add(new Planning(result.getInt("idPlanning"), result.getTimestamp("startDate"),
+                    result.getTimestamp("endDate"), result.getString("name"),
+                    result.getString("description"), new Team(result.getString("teamName")), result.getDouble("budget")));
+            }
+            logs = logs + "success";
+            Logs.writeLogs(logs);
+        }catch(SQLException e){
+            e.printStackTrace();
+            logs = logs + "failed " + e;
+            Logs.writeLogs(logs);
+        }
+
+        try {
+            assert currentPlanning != null ;
+            Utils.pdfExport(currentPlanning);
+            logs = logs + "success";
+            Logs.writeLogs(logs);
+        }catch(Exception e){
+            e.printStackTrace();
+            logs = logs + "failed " + e;
+            Logs.writeLogs(logs);
+        }
+    }
+
 
 
 }

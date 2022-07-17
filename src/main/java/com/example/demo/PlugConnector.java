@@ -14,16 +14,15 @@ import javafx.stage.Stage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
 import java.util.jar.JarFile;
 
-public class PlugConnector extends Application {
+public class PlugConnector {
     static HashSet<PluginModel> plugins = new HashSet<>();
-
-    @Override
-    public void start(Stage myStage) throws Exception {
+    public static void start() throws Exception {
         String myPluginPath = "C:/Users/Moustapha Diarra/Documents/Ecole/3AL1/Projet ANNUEL/ClientLourdJVFX/manWorker/src/main/java/com/example/demo/plugins" ;
         File pluginDirectory = new File(myPluginPath);
         if (!pluginDirectory.exists()) pluginDirectory.mkdir();
@@ -66,26 +65,16 @@ public class PlugConnector extends Application {
             });
             if (!plugins.isEmpty()) loadedPluginModels.getChildren().add(new Label("Loaded plugins:"));
             plugins.forEach(plugin -> {
-                plugin.initialize();
+                try {
+                    plugin.initialize();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 loadedPluginModels.getChildren().add(new Label(plugin.name()));
             });
         }
-        Rectangle2D screenbounds = Screen.getPrimary().getVisualBounds();
-        Scene scene = new Scene(loadedPluginModels, screenbounds.getWidth() / 2, screenbounds.getHeight() / 2);
-        myStage.setScene(scene);
-
-        //Charge logo
-        File file = new File("images.txt");
-        BufferedReader br = new BufferedReader(new FileReader(file));
-        String logoLink = br.readLine();
-        myStage.getIcons().add(new Image(logoLink));
-
-        myStage.show();
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
 }
 
 

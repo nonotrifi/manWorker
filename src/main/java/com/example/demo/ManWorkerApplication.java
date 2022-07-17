@@ -33,7 +33,7 @@ In the end:
 
 public class ManWorkerApplication extends Application {
     @FXML
-    private Label showUsername;
+    //private Label showUsername;
 
     //static ArrayList<Planning> plannings = new ArrayList<Planning>();
     //static ArrayList<Team> teams = new ArrayList<>();

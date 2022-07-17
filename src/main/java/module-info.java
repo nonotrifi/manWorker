@@ -8,6 +8,7 @@ module com.example.demo {
     requires org.testng;
     requires junit;
     requires org.junit.jupiter.api;
+    requires itextpdf;
 
     exports com.example.demo;
     opens com.example.demo;

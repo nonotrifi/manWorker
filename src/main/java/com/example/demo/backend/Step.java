@@ -13,6 +13,18 @@ public class Step {
         this.description = description;
 
     }
+    @Override
+    public String toString() {
+        return "Step " + name +
+                "\n" +
+                "Step Id : " + idStep +
+                "\n" +
+                "Step Title --> " + name +
+                "\n" +
+                "Step description : " + description +
+                "\n" +
+                "\n";
+    }
 
 
     /*---------------------------------------- Getters and setters----------------------------------------- */
@@ -36,8 +48,8 @@ public class Step {
         return this.description;
     }
 
-   @Override
-    public String toString(){
-        return "Name: " + this.name + "\n" + "Description: " + this.description;
-    }
+//   @Override
+//    public String toString(){
+//        return "Name: " + this.name + "\n" + "Description: " + this.description;
+//    }
 }

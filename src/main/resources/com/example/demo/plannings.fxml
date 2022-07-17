@@ -99,5 +99,6 @@
                </image>
             </ImageView>
          </graphic></Button>
+      <Button fx:id="exportPdf" layoutX="516.0" layoutY="372.0" mnemonicParsing="false" onAction="#createPDF" text="Export to PDF" />
    </children>
 </AnchorPane>

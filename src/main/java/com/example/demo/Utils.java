@@ -1,9 +1,13 @@
 package com.example.demo;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
+import java.sql.SQLException;
 import java.time.*;
 import java.util.*;
+
+import com.example.demo.backend.Step;
+import com.itextpdf.text.*;
+import com.example.demo.backend.Planning;
+import com.itextpdf.text.pdf.PdfWriter;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,7 +20,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -179,6 +182,34 @@ public class Utils {
 
         alert.show();
 
+    }
+    public static void pdfExport(ArrayList<Planning> planning) throws SQLException {
+        String logs = "Creating Planning Pdf : ";
+        try{
+            com.itextpdf.text.Document document = new Document();
+            PdfWriter.getInstance(document, new FileOutputStream("planningPdf.pdf"));
+
+            document.open();
+            Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
+
+            Paragraph chunk = new Paragraph(planning.toString(), font);
+
+            document.add(chunk);
+            try {
+                Runtime.getRuntime().exec("rundll32 url.dll, FileProtocolHandler " + "planningPdf.pdf");
+            } catch (IOException e) {
+                e.printStackTrace();
+                logs = logs + "failed " + e;
+                Logs.writeLogs(logs);
+            }
+            document.close();
+            logs = logs + "success";
+            Logs.writeLogs(logs);
+        } catch (DocumentException | IOException e) {
+            e.printStackTrace();
+            logs = logs + "failed " + e;
+            Logs.writeLogs(logs);
+        }
     }
 
 

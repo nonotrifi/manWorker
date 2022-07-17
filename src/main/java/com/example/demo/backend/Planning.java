@@ -29,6 +29,29 @@ public class Planning {
         this.steps.add(step);
     }
 
+    @Override
+    public String toString() {
+        return "\nPlanning " + name +
+                "\n" +
+                "ID : " + idPlanning +
+                "\n" +
+                " Project Title : " + name +
+                "\n" +
+                " Description : " + description +
+                "\n" +
+                " *************** "+
+                "\n" +
+                " Start date : " + startDate +
+                "\n" +
+                " End date : " + endDate +
+                "\n" +
+                " Budget : " + budget +
+                "\n" +
+                " *Team* " + team +
+                "\n" +
+                "\n";
+    }
+
     /*---------------------------------------- Getters and setters----------------------------------------- */
 
     public void setName(String newTitle){
@@ -81,6 +104,7 @@ public class Planning {
     public void setIdPlanning(int idPlanning){
         this.idPlanning = idPlanning;
     }
+
 
 
 }
