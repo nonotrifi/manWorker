@@ -5,12 +5,15 @@ import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
@@ -70,6 +73,13 @@ public class PlugConnector extends Application {
         Rectangle2D screenbounds = Screen.getPrimary().getVisualBounds();
         Scene scene = new Scene(loadedPluginModels, screenbounds.getWidth() / 2, screenbounds.getHeight() / 2);
         myStage.setScene(scene);
+
+        //Charge logo
+        File file = new File("images.txt");
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String logoLink = br.readLine();
+        myStage.getIcons().add(new Image(logoLink));
+
         myStage.show();
     }
 

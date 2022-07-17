@@ -1,4 +1,7 @@
 package com.example.demo;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.time.*;
 import java.util.*;
 import javafx.event.ActionEvent;
@@ -8,6 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.DatePicker;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -154,6 +158,13 @@ public class Utils {
         Scene scene = new Scene(fxmlLoader.load(), FRAME_WIDTH, FRAME_HEIGHT);
         Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         stage.setScene(scene);
+
+        // Charger logo
+        File file = new File("images.txt");
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String logoLink = br.readLine();
+        stage.getIcons().add(new Image(logoLink));
+
         stage.show();
     }
 
