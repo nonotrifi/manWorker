@@ -89,7 +89,10 @@ public class AddStepsController{
     @FXML
     public void addStep() throws SQLException {
         String[] stepNameField = {"step name", name.getText()};
+        String[] stepDescriptionField = {"step description", description.getText()};
+
         String stepNameMessage = Utils.checkField(stepNameField);
+        String stepDescriptionMessage = Utils.checkField(stepDescriptionField);
 
         if(!Utils.isConfirm(stepNameMessage)){
             showAlert(Alert.AlertType.ERROR, owner, "Error",
@@ -97,6 +100,14 @@ public class AddStepsController{
             name.requestFocus();
             return;
         }
+
+        if(!Utils.isConfirm(stepDescriptionMessage)){
+            showAlert(Alert.AlertType.ERROR, owner, "Error",
+                    stepDescriptionMessage);
+            name.requestFocus();
+            return;
+        }
+
 
         insertNewStep();
 

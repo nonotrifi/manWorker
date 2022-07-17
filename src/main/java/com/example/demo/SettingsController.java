@@ -1,17 +1,18 @@
 package com.example.demo;
 
-import javafx.event.ActionEvent;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Window;
 
-//import static com.example.demo.ManWorkerApplication.currentUser;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
+
+import static com.example.demo.ManWorkerApplication.currentUser;
 import static com.example.demo.ManWorkerApplication.databaseLink;
 import static com.example.demo.Utils.showAlert;
 
@@ -34,6 +35,12 @@ public class SettingsController{
 
         String checkUsernameAndOldPasswordMessage = checkUsernameAndOldPassword(name.getText(), oldPassword.getText());
 
+        if(name.getText().compareTo(currentUser) != 0){
+            showAlert(Alert.AlertType.ERROR, owner, "Error",
+                    "This is not the current user");
+            return;
+        }
+
         if(!Utils.isConfirm(checkUsernameAndOldPasswordMessage)){
             showAlert(Alert.AlertType.ERROR, owner, "Error",
                     checkUsernameAndOldPasswordMessage);
@@ -54,21 +61,14 @@ public class SettingsController{
 
     public String checkUsernameAndOldPassword(String username, String oldPassword) throws SQLException {
         String sql = "SELECT password FROM users WHERE name = ?;";
-
         PreparedStatement preparedStmt = databaseLink.prepareStatement(sql);
         preparedStmt.setString(1, name.getText());
-
         ResultSet result = preparedStmt.executeQuery();
-
-        /* If the result is empty, it means that the user doesn't exist in the database */
         if(!result.next()){
             System.out.println(result.next());
             return "The username you put is wrong.";
         }
-
-        /* Checking if the password that the user put and the password in the database are the same */
         String databasePassword = result.getString("password");
-
         if(oldPassword.compareTo(databasePassword) != 0){
             return "The old password is wrong.";
         }
@@ -88,5 +88,6 @@ public class SettingsController{
         showAlert(Alert.AlertType.CONFIRMATION, owner, "Confirmation",
                 "Password changed correctly.");
     }
+
 
 }

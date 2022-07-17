@@ -80,6 +80,8 @@ public class PlanningController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        // Etape 1: Connecter les champs du tableau FXML aux attributs de la classe Planning
+
         // saying to java that the attribute name from the object planning will take place of the column name
         nameCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("name"));
         descriptionCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("description"));
@@ -87,6 +89,9 @@ public class PlanningController implements Initializable {
         startCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("startDate"));
         endCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("endDate"));
         teamCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("team"));
+
+
+        // Etape 2 : Récupérer les teamps présentes dans la base de données et les mettre dans le teamchoice côté front
         try {
             /* Setting up the teamChoice with the teams we have in the database */
             if(teamChoice != null){
@@ -104,6 +109,8 @@ public class PlanningController implements Initializable {
                 }
             }
 
+
+            // Etape 3 : Ajout des planning déjà présents dans la base de donnée côté FXML
 
             /* Adding the plannings created by the user that is logged in to the table */
             String sql = "SELECT * FROM plannings where username = ?";
@@ -126,9 +133,12 @@ public class PlanningController implements Initializable {
                 table.getItems().add(currentPlanning);
             }
         } catch (SQLException e) {
-            // red error sql
+            // red error sql, printing the error
             e.printStackTrace();
         }
+
+
+        // Etape 4 : Dire à Java qu'au moment ou on double clique sur l'un des planning on ouvrira le content steps
 
         /*
             This part is when we click the row we load a content. <>
@@ -244,6 +254,7 @@ public class PlanningController implements Initializable {
                 + " values (?, ?, ?, ?, ?, ?, ?)";
 
         // create the mysql insert preparedstatement
+        // Because we putting in the database that's autoincremented, if I don't put this it's gonna generate an error
         PreparedStatement preparedStmt = databaseLink.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         preparedStmt.setString (1, name);
         preparedStmt.setString   (2, description);
@@ -256,6 +267,8 @@ public class PlanningController implements Initializable {
         // execute is when you press the bottom to execute a query
         preparedStmt.executeUpdate();
 
+        // Car a chaque fois qu'on exécute la requête, Mysql autogénére une clé, la valeur de cette clé on la récupère avec rs.getInt()
+        // Et on donne à idPlanning
         // GenerateKeys we use because is autoincremented from sql and we cannot know this without getGeneratedKey()
         ResultSet rs = preparedStmt.getGeneratedKeys();
 
@@ -265,8 +278,11 @@ public class PlanningController implements Initializable {
             idPlanning = rs.getInt(1);
         }
 
+        // Creating new object (class Planning) and adding the object to fxml table
+        // We have to create a new object to add to the table, those attributes take the values from fxml line 245
         Planning newPlanning = new Planning(idPlanning, startDate, endDate,
                 name, description, new Team(teamName), budget);
+
 
         table.getItems().add(newPlanning);
 

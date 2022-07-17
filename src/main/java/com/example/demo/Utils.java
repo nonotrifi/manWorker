@@ -1,8 +1,5 @@
 package com.example.demo;
-import java.time.*;
-import java.util.*;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -15,7 +12,6 @@ import javafx.stage.Window;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
@@ -33,14 +29,13 @@ public class Utils {
         if(field == null)
             return "An error occurred";
 
-
         String fieldName = field[0], fieldValue = field[1];
 
         if(fieldName == null)
             return "An error occurred";
 
         if(fieldValue == null)
-            return fieldName + " field cannot be blank";
+            return fieldName + " field cannot be empty";
 
         if (fieldValue.isBlank()) {
             return fieldName + " field cannot be blank";
@@ -112,7 +107,7 @@ public class Utils {
             return false;
         }
 
-        // Avant de parse c'est un string l'objectf avec parseInt est de le transformer en Integer
+        // Avant de parse c'est un string. l'objectif avec parseInt est de le transformer en Integer
         try {
             Float.parseFloat(string);
             return true;
@@ -151,10 +146,17 @@ public class Utils {
     }
 
     public static void loadPage(String fxmlName, ActionEvent e) throws IOException{
+        // the fxml is inside th folder "ressources" folder le PATH "ManWorkerApplication.class.getResource(fxmlName)"
         FXMLLoader fxmlLoader = new FXMLLoader(ManWorkerApplication.class.getResource(fxmlName));
+
+        // what's inside the window
         Scene scene = new Scene(fxmlLoader.load(), FRAME_WIDTH, FRAME_HEIGHT);
+
+        // it's the window |
         Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+        // puting the scene inside the window
         stage.setScene(scene);
+        // showing the window make it visible
         stage.show();
     }
 

@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import static com.example.demo.ManWorkerApplication.databaseLink;
 import static com.example.demo.Utils.showAlert;
@@ -32,9 +31,7 @@ public class LoginController{
         String message = isValidated(username.getText(), password.getText());
 
         if(Utils.isConfirm(message)){
-            // Go to home
             Utils.loadPage("home.fxml", e);
-            // Change the current user
             ManWorkerApplication.currentUser = username.getText();
         }
         else{
@@ -43,32 +40,24 @@ public class LoginController{
         }
     }
 
-    /*
-        createStatement is when we want to create a command for the database. Could be a query (SELECT) or an update (INSERT, DEELETE ..)
-     */
     public String isValidated(String username, String password) throws SQLException {
         String sql = "SELECT password FROM users WHERE name = ?;";
-
         PreparedStatement preparedStmt = databaseLink.prepareStatement(sql);
         preparedStmt.setString (1, username);
-
         ResultSet result = preparedStmt.executeQuery();
 
-        // CHecking if the result is empty
         if(!result.next()){
             return "Username is wrong";
         }
 
-        // ici on récupére le password qu'on a mis sur le fxml via l'id password
+
         String realPassword = result.getString("password");
 
         if (realPassword.compareTo(password) == 0) {
-            //System.out.println(result.next());
             return Utils.CONFIRM_MESSAGE;
         }
         else
             return "Password is wrong";
-
     }
 
 
