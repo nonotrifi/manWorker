@@ -22,6 +22,7 @@ import java.util.jar.JarFile;
 
 public class PlugConnector {
     public static ArrayList<URLClassLoader> classLoader = new ArrayList<>();
+    PluginModel plugin ;
     public static boolean isLaunched = false ;
     static HashSet<PluginModel> plugins = new HashSet<>();
 
@@ -72,6 +73,7 @@ public class PlugConnector {
             plugins.forEach(plugin -> {
                 try {
                     plugin.initialize();
+                    System.out.println("Nom du plugin : "+plugin.name()+"\n");
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -91,11 +93,15 @@ public class PlugConnector {
         String logs = "Closing pluginConnector : ";
         try{
             if(isLaunched){
+                for(PluginModel plugin : plugins ){
+                    plugins.remove(plugin) ;
+                }
                 for(URLClassLoader url : classLoader){
                     url.close() ;
                 }
                 isLaunched = false ;
             }
+            System.out.println("Plugin désactivé correctement\n");
             logs = logs + "success";
             Logs.writeLogs(logs);
         }catch (Exception e){

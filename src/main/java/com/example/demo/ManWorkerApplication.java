@@ -69,6 +69,7 @@ public class ManWorkerApplication extends Application {
         File file = new File("images.txt");
         BufferedReader br = new BufferedReader(new FileReader(file));
         String logoLink = br.readLine();
+        System.out.println(logoLink);
         stage.getIcons().add(new Image(logoLink));
         stage.show();
     }

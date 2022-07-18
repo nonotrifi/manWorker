@@ -17,7 +17,7 @@ public class Logs {
                 System.out.println("File already exists.");
             }
         } catch (IOException e) {
-            System.out.println("An error occurred.");
+            System.out.println("An error occurred during File creation");
             e.printStackTrace();
         }
     }
@@ -31,13 +31,13 @@ public class Logs {
 
             FileWriter fileWritter = new FileWriter(f1.getName(),true);
             BufferedWriter bw = new BufferedWriter(fileWritter);
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
             Date date = new Date();
-            System.out.println(formatter.format(date));
-            bw.write("\n" + date + " : \n");
-            bw.write(content + "\n");
+            //System.out.println(formatter.format(date));
+            bw.write("\nNew log in log.txt" + date + " : \n");
+            bw.write(" "+content + "\n");
             bw.close();
-            System.out.println("Done");
+            //System.out.println("Done");
         } catch(IOException e){
             e.printStackTrace();
         }

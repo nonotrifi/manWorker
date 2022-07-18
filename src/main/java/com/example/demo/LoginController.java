@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Window;
+import org.controlsfx.control.action.Action;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -24,6 +25,16 @@ public class LoginController{
     @FXML
     public void goToRegistration(ActionEvent e) throws IOException {
         Utils.loadPage("registration.fxml", e);
+    }
+
+    @FXML
+    public void putPlugin(ActionEvent e ) throws Exception {
+        if(PlugConnector.isLaunched){
+            PlugConnector.close();
+            return ;
+        }
+        PlugConnector.start() ;
+        return ;
     }
 
     @FXML
