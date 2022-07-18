@@ -106,3 +106,21 @@ New log in log.txtMon Jul 18 03:22:53 CEST 2022 :
 
 New log in log.txtMon Jul 18 03:26:19 CEST 2022 : 
  Starting plugConnector : success
+
+New log in log.txtMon Jul 18 11:15:05 CEST 2022 : 
+ Starting plugConnector : success
+
+New log in log.txtMon Jul 18 11:15:08 CEST 2022 : 
+ Closing pluginConnector : success
+
+New log in log.txtMon Jul 18 11:15:14 CEST 2022 : 
+ Starting plugConnector : success
+
+New log in log.txtMon Jul 18 11:15:50 CEST 2022 : 
+ Planning initialize: success
+
+New log in log.txtMon Jul 18 11:27:59 CEST 2022 : 
+ Planning initialize: success
+
+New log in log.txtMon Jul 18 11:28:05 CEST 2022 : 
+ Planning initialize: success
