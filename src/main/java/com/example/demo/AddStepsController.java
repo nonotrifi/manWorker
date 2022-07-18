@@ -38,8 +38,8 @@ public class AddStepsController{
     Window owner;
 
     public void setUp(Planning planning) throws PlanningException {
-        if(planning == null)
-            throw new PlanningException();
+        if(planning == null) throw new PlanningException();
+
 
         /* Set current planning */
         this.planning = planning;
@@ -55,6 +55,7 @@ public class AddStepsController{
 
 
     public void tableSetUp(){
+        //Defini les colonnes nameCol et description avec les valeurs et type necessaires
         nameCol.setCellValueFactory(new PropertyValueFactory<Step, String>("name"));
         descriptionCol.setCellValueFactory(new PropertyValueFactory<Step, String>("description"));
 
@@ -71,7 +72,9 @@ public class AddStepsController{
             the idStep is hidden but it's used in the back
              */
 
+            //Recupere step pour les mettres dans la table 1a1
             while(result.next()){
+                //ResulSet tourne en boucle car next retourne faux si rien apres
                 table.getItems().add(new Step (result.getInt("idStep"),result.getString("name"), result.getString("description")
                 ));
             }
@@ -89,8 +92,10 @@ public class AddStepsController{
         String stepDescriptionMessage = Utils.checkField(stepDescriptionField);
 
         if(!Utils.isConfirm(stepNameMessage)){
+            //Envoie Fenetre alerte erreur
             showAlert(Alert.AlertType.ERROR, owner, "Error",
                     stepNameMessage);
+            //Remet le curseur sur name
             name.requestFocus();
             return;
         }
@@ -107,6 +112,7 @@ public class AddStepsController{
 
     }
 
+    //Pour l'insertion d'une new step, opn l'ajoute d'abord en base puis l'ajoute au tableau avec addStep
     public void insertNewStep() throws SQLException {
         String sql = "insert into steps(name, description, idPlanning)"
                 + " values (?, ?, ?)";
@@ -120,6 +126,7 @@ public class AddStepsController{
 
         preparedStmt.executeUpdate();
 
+        //Recupere l'id de la requete pour creer notre objet step
         ResultSet rs = preparedStmt.getGeneratedKeys();
 
         int idStep = 0;
@@ -140,15 +147,16 @@ public class AddStepsController{
         Step step = (Step)table.getSelectionModel().getSelectedItem();
         if(step == null)
             return;
+        //On supprime de la table d'abord
         table.getItems().remove(step);
-
+        //Puis en base
         String sql = "DELETE FROM steps WHERE idStep = ?";
 
         PreparedStatement pstmt = databaseLink.prepareStatement(sql);
 
         // set the corresponding param
         pstmt.setInt(1, step.getIdStep());
-        // execute the delete statement
+        // Execute the delete statement
         pstmt.executeUpdate();
     }
 }

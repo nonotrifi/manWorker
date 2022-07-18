@@ -1,15 +1,24 @@
 package com.example.demo;
+import java.io.*;
+import java.sql.SQLException;
+import java.time.*;
+import java.util.*;
+
+import com.example.demo.backend.Step;
+import com.itextpdf.text.*;
+import com.example.demo.backend.Planning;
+import com.itextpdf.text.pdf.PdfWriter;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.DatePicker;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -18,6 +27,7 @@ import java.util.Date;
 public class Utils {
     public static final int FRAME_HEIGHT = 800, FRAME_WIDTH = 1000;
     public static final String CONFIRM_MESSAGE = "Confirm";
+    public static boolean connectPlug = false ;
 
     /* This function gets a value for a field ( for example " Alice " for " name " ) and if the value is blank ( for example
      * field = "" it would return a message saying the text field name ( which is " name " in the example ) and returns
@@ -156,7 +166,13 @@ public class Utils {
         Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         // puting the scene inside the window
         stage.setScene(scene);
-        // showing the window make it visible
+
+        // Charger logo
+        File file = new File("images.txt");
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String logoLink = br.readLine();
+        stage.getIcons().add(new Image(logoLink));
+
         stage.show();
     }
 
@@ -171,6 +187,34 @@ public class Utils {
 
         alert.show();
 
+    }
+    public static void pdfExport(ArrayList<Planning> planning) throws SQLException {
+        String logs = "Creating Planning Pdf : ";
+        try{
+            com.itextpdf.text.Document document = new Document();
+            PdfWriter.getInstance(document, new FileOutputStream("planningPdf.pdf"));
+
+            document.open();
+            Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
+
+            Paragraph chunk = new Paragraph(planning.toString(), font);
+
+            document.add(chunk);
+            try {
+                Runtime.getRuntime().exec("rundll32 url.dll, FileProtocolHandler " + "planningPdf.pdf");
+            } catch (IOException e) {
+                e.printStackTrace();
+                logs = logs + "failed " + e;
+                Logs.writeLogs(logs);
+            }
+            document.close();
+            logs = logs + "success";
+            Logs.writeLogs(logs);
+        } catch (DocumentException | IOException e) {
+            e.printStackTrace();
+            logs = logs + "failed " + e;
+            Logs.writeLogs(logs);
+        }
     }
 
 

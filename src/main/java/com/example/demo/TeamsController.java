@@ -23,7 +23,7 @@ public class TeamsController{
 
     @FXML
     public void addTeam() throws SQLException {
-        String[] teamNameField = {"team name", name.getText()};
+        String[] teamNameField = {"Team name", name.getText()};
         String teamNameMessage = Utils.checkField(teamNameField);
 
         if (!Utils.isConfirm(teamNameMessage)){

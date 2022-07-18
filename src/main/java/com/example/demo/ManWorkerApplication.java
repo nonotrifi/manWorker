@@ -8,9 +8,13 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -18,7 +22,7 @@ import java.sql.DriverManager;
 
 public class ManWorkerApplication extends Application {
     @FXML
-    private Label showUsername;
+    //private Label showUsername;
 
     static String currentUser;
 
@@ -47,6 +51,12 @@ public class ManWorkerApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(ManWorkerApplication.class.getResource("logIn.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), Utils.FRAME_WIDTH, Utils.FRAME_HEIGHT);
         stage.setScene(scene);
+
+        File file = new File("images.txt");
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String logoLink = br.readLine();
+        System.out.println(logoLink);
+        stage.getIcons().add(new Image(logoLink));
         stage.show();
     }
 

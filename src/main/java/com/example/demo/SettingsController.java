@@ -31,7 +31,7 @@ public class SettingsController{
     Window owner;
     @FXML
     public void saveNewPassword() throws SQLException {
-        String[] newPasswordField = {"new password", newPassword.getText()};
+        String[] newPasswordField = {"New password", newPassword.getText()};
 
         String checkUsernameAndOldPasswordMessage = checkUsernameAndOldPassword(name.getText(), oldPassword.getText());
 
@@ -68,7 +68,6 @@ public class SettingsController{
         ResultSet result = preparedStmt.executeQuery();
 
         if(!result.next()){
-            System.out.println(result.next());
             return "The username you put is wrong.";
         }
 
