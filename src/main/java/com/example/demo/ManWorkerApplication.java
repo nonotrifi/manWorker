@@ -15,24 +15,10 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-/*
-
-TODOS
-
-Home:
-- fix aesthetic
-- test the app to find if there are bugs
-
-In the end:
-- junit
-*/
 
 public class ManWorkerApplication extends Application {
     @FXML
     private Label showUsername;
-
-    //static ArrayList<Planning> plannings = new ArrayList<Planning>();
-    //static ArrayList<Team> teams = new ArrayList<>();
 
     static String currentUser;
 

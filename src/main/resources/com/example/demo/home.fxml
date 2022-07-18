@@ -14,7 +14,7 @@
                <children>
                   <HBox layoutX="239.0" prefHeight="42.0" prefWidth="525.0" AnchorPane.bottomAnchor="24.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <JFXButton prefHeight="38.0" prefWidth="136.0" text="Plannings">
+                        <JFXButton onAction="#goToNewProject"  prefHeight="38.0" prefWidth="136.0" text="Plannings">
                            <graphic>
                               <ImageView fitHeight="22.0" fitWidth="22.0" opacity="0.46" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -22,11 +22,11 @@
                                  </image></ImageView>
                            </graphic>
                         </JFXButton>
-                        <JFXButton onAction="#goToNewProject" prefHeight="38.0" prefWidth="136.0" text="Create">
+                        <JFXButton onAction="#goToTeamsInterface" prefHeight="38.0" prefWidth="136.0" text="Teams">
                            <graphic>
                               <ImageView fitHeight="22.0" fitWidth="22.0" opacity="0.46" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@images/icons8-add-50.png" />
+                                    <Image url="@images/icons8-localisateur-de-pièces-50.png" />
                                  </image></ImageView>
                            </graphic>
                         </JFXButton>
@@ -67,7 +67,18 @@
                <children>
                   <VBox layoutX="14.0" layoutY="35.0" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="53.0">
                      <children>
-                        <JFXButton alignment="BASELINE_LEFT" prefHeight="38.0" prefWidth="176.0" text="Planning" textFill="WHITE">
+<!--                        <JFXButton alignment="BASELINE_LEFT" prefHeight="38.0" prefWidth="176.0" text="Create" textFill="WHITE">-->
+<!--                           <font>-->
+<!--                              <Font name="System Bold" size="15.0" />-->
+<!--                           </font>-->
+<!--                           <graphic>-->
+<!--                              <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">-->
+<!--                                 <image>-->
+<!--                                    <Image url="@images/dash.png" />-->
+<!--                                 </image></ImageView>-->
+<!--                           </graphic>-->
+<!--                        </JFXButton>-->
+                        <JFXButton alignment="BASELINE_LEFT" onAction="#goToNewProject" prefHeight="38.0" prefWidth="176.0" text="Planning" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="15.0" />
                            </font>
@@ -75,17 +86,6 @@
                               <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@images/dash.png" />
-                                 </image></ImageView>
-                           </graphic>
-                        </JFXButton>
-                        <JFXButton alignment="BASELINE_LEFT" onAction="#goToNewProject" prefHeight="38.0" prefWidth="176.0" text="Create" textFill="WHITE">
-                           <font>
-                              <Font name="System Bold" size="15.0" />
-                           </font>
-                           <graphic>
-                              <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@images/add.png" />
                                  </image></ImageView>
                            </graphic>
                         </JFXButton>

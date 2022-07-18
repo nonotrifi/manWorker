@@ -25,24 +25,18 @@ public class AddStepsController{
     private Planning planning;
     @FXML
     private Label planningName;
-
     @FXML
     private TableColumn<Step, String> nameCol;
     @FXML
     private TableColumn<Step, String> descriptionCol;
-
     @FXML
     private TextField name;
-
     @FXML
     private TextArea description;
-
     @FXML
     private TableView table;
-
     Window owner;
 
-    //adding step to the planning
     public void setUp(Planning planning) throws PlanningException {
         if(planning == null)
             throw new PlanningException();
@@ -74,7 +68,7 @@ public class AddStepsController{
 
             /* result has the rows that are in the database, each row is used to create new planning objects
             and put them into the tableView in the interface
-            the idStep is hidden but it's
+            the idStep is hidden but it's used in the back
              */
 
             while(result.next()){
@@ -89,7 +83,10 @@ public class AddStepsController{
     @FXML
     public void addStep() throws SQLException {
         String[] stepNameField = {"step name", name.getText()};
+        String[] stepDescriptionField = {"step description", description.getText()};
+
         String stepNameMessage = Utils.checkField(stepNameField);
+        String stepDescriptionMessage = Utils.checkField(stepDescriptionField);
 
         if(!Utils.isConfirm(stepNameMessage)){
             showAlert(Alert.AlertType.ERROR, owner, "Error",
@@ -97,6 +94,14 @@ public class AddStepsController{
             name.requestFocus();
             return;
         }
+
+        if(!Utils.isConfirm(stepDescriptionMessage)){
+            showAlert(Alert.AlertType.ERROR, owner, "Error",
+                    stepDescriptionMessage);
+            name.requestFocus();
+            return;
+        }
+
 
         insertNewStep();
 

@@ -32,8 +32,6 @@ import static com.example.demo.ManWorkerApplication.databaseLink;
 import static com.example.demo.Utils.showAlert;
 
 public class PlanningController implements Initializable {
-
-    // To not change the whole page and keep the menu
     @FXML
     private AnchorPane contentPlanning;
 
@@ -55,8 +53,6 @@ public class PlanningController implements Initializable {
 
     @FXML
     private PrefixSelectionChoiceBox<String> teamChoice;
-
-    /* Table with the user's plannings */
     @FXML
     private TableView table;
 
@@ -80,6 +76,8 @@ public class PlanningController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        // Etape 1: Connecter les champs du tableau FXML aux attributs de la classe Planning
+
         // saying to java that the attribute name from the object planning will take place of the column name
         nameCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("name"));
         descriptionCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("description"));
@@ -87,10 +85,11 @@ public class PlanningController implements Initializable {
         startCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("startDate"));
         endCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("endDate"));
         teamCol.setCellValueFactory(new PropertyValueFactory<Planning, String>("team"));
+
+
+        // Etape 2 : Récupérer les teamps présentes dans la base de données et les mettre dans le teamchoice côté front
         try {
-            /* Setting up the teamChoice with the teams we have in the database */
             if(teamChoice != null){
-                // We just want the teams that were cretaed by the user that is logged in
                 String sql = "SELECT name FROM teams WHERE username = ?";
 
                 PreparedStatement preparedStmt = databaseLink.prepareStatement(sql);
@@ -104,6 +103,8 @@ public class PlanningController implements Initializable {
                 }
             }
 
+
+            // Etape 3 : Ajout des planning déjà présents dans la base de donnée côté FXML
 
             /* Adding the plannings created by the user that is logged in to the table */
             String sql = "SELECT * FROM plannings where username = ?";
@@ -126,22 +127,18 @@ public class PlanningController implements Initializable {
                 table.getItems().add(currentPlanning);
             }
         } catch (SQLException e) {
-            // red error sql
+
             e.printStackTrace();
         }
 
-        /*
-            This part is when we click the row we load a content. <>
-            tv is a parameter of a lambda function - setRowFactory means an event handler to teach
-         */
+
+        // Etape 4 : Dire à Java qu'au moment ou on double clique sur l'un des planning on ouvrira le content steps
+
         table.setRowFactory( tv -> {
-            // <> generics for example Array<String>, Planning is the object inside the tableRow
-            // Pour chaque ligne dans la table Planning
             TableRow<Planning> planningRow = new TableRow<>();
 
-            // Dans le cas ou le user clique sur l'une de ces lignes ->
             planningRow.setOnMouseClicked(event -> {
-                // we have to say !row otherwise we can click everywhre and it shows error
+
                 if (event.getClickCount() == 2 && (! planningRow.isEmpty()) ) {
                     FXMLLoader loader = Utils.loadContent("addSteps.fxml",contentPlanning);
 
@@ -164,7 +161,6 @@ public class PlanningController implements Initializable {
 
     @FXML
     public void addPlanning() throws SQLException {
-        // We convert in Java Date because before converting it was in DatePicker (javaFX)
 
         if(startDate.getValue() == null || endDate.getValue() == null){
             showAlert(Alert.AlertType.ERROR, owner, "Error",
@@ -223,9 +219,6 @@ public class PlanningController implements Initializable {
         }
 
 
-
-
-        // Check if date1 is date 1 before date 2, we already converted Datepicker to Date Java with this line Date d1 = convert(startDate)
         if(d1.after(d2)){
             showAlert(Alert.AlertType.ERROR,owner, "Error",
                     "Start Date should be before End Date");
@@ -244,6 +237,7 @@ public class PlanningController implements Initializable {
                 + " values (?, ?, ?, ?, ?, ?, ?)";
 
         // create the mysql insert preparedstatement
+        // Because we putting in the database that's autoincremented, if I don't put this it's gonna generate an error
         PreparedStatement preparedStmt = databaseLink.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         preparedStmt.setString (1, name);
         preparedStmt.setString   (2, description);
@@ -253,10 +247,10 @@ public class PlanningController implements Initializable {
         preparedStmt.setString    (6, teamName);
         preparedStmt.setString(7, username);
 
-        // execute is when you press the bottom to execute a query
+
         preparedStmt.executeUpdate();
 
-        // GenerateKeys we use because is autoincremented from sql and we cannot know this without getGeneratedKey()
+
         ResultSet rs = preparedStmt.getGeneratedKeys();
 
         int idPlanning = 0;
@@ -267,6 +261,7 @@ public class PlanningController implements Initializable {
 
         Planning newPlanning = new Planning(idPlanning, startDate, endDate,
                 name, description, new Team(teamName), budget);
+
 
         table.getItems().add(newPlanning);
 
@@ -282,18 +277,16 @@ public class PlanningController implements Initializable {
 
         table.getItems().remove(planning);
 
-        // Deleting
         String sql = "DELETE FROM plannings WHERE idPlanning = ?";
 
         PreparedStatement pstmt = databaseLink.prepareStatement(sql);
 
-        // set the corresponding param
+
         pstmt.setInt(1, planning.getIdPlanning());
-        // execute the delete statement
+
         pstmt.executeUpdate();
 
 
-        //ManWorkerApplication.plannings.remove(planning);
     }
 
 

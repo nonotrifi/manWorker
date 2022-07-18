@@ -71,7 +71,7 @@ public class ManWorkerTest {
 
     @Test
     public void testIsValidated() throws SQLException {
-        String loginMessage = loginController.isValidated("mairam", "123456");
+        String loginMessage = loginController.isValidated("mairam", "12345");
         assertEquals(0, loginMessage.compareTo("Confirm"));
 
         loginMessage = loginController.isValidated("mairam", "1234566");
@@ -81,7 +81,8 @@ public class ManWorkerTest {
         assertEquals(0, loginMessage.compareTo("Username is wrong"));
     }
 
-    @Test(expected = PlanningException.class)   public void testAddStepsSetUpException() throws PlanningException {
+    @Test(expected = PlanningException.class)
+    public void testAddStepsSetUpException() throws PlanningException {
         addStepsController.setUp(null);
 
     }
